@@ -57,7 +57,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.only(top: 20),
+        padding: const EdgeInsets.only(top: 20),
         child: Center(
             child: Stack(
           children: [
@@ -71,7 +71,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
               itemBuilder: (context, index) {
                 Widget child = Material(
                     child: Container(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                   ),
@@ -84,21 +84,21 @@ class _SwipeScreenState extends State<SwipeScreen> {
                           child: Image(
                               image: AssetImage(
                                   'assets/${widget.ideas[index].content["asset"]}'))),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Text(
                         widget.ideas[index].content["title"],
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 26, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.start,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Text(
                         widget.ideas[index].content["desc"],
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 18,
                         ),
                         overflow: TextOverflow.ellipsis,
@@ -117,14 +117,14 @@ class _SwipeScreenState extends State<SwipeScreen> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)),
                       elevation: 16,
-                      margin: EdgeInsets.all(20),
+                      margin: const EdgeInsets.all(20),
                       child: Hero(tag: index, child: child),
                     ));
               },
               matchEngine: engine!,
             ),
             (stackFinished
-                ? Positioned(
+                ? const Positioned(
                     left: 200,
                     bottom: 20,
                     child: RotatedBox(
@@ -137,7 +137,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                     bottom: 25,
                     right: 70,
                     child: ElevatedButton(
-                      child: Icon(
+                      child: const Icon(
                         Icons.thumb_up,
                         color: Colors.green,
                         size: 50,
@@ -146,8 +146,8 @@ class _SwipeScreenState extends State<SwipeScreen> {
                         engine?.currentItem?.like();
                       },
                       style: ElevatedButton.styleFrom(
-                          shape: CircleBorder(),
-                          padding: EdgeInsets.all(10),
+                          shape: const CircleBorder(),
+                          padding: const EdgeInsets.all(10),
                           primary: Colors.white),
                     ),
                   )),
@@ -155,7 +155,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                 ? Center(
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
+                        children: const [
                           SizedBox(
                             height: 150,
                           ),
@@ -174,7 +174,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                     bottom: 25,
                     left: 70,
                     child: ElevatedButton(
-                      child: Icon(
+                      child: const Icon(
                         Icons.thumb_down,
                         color: Colors.red,
                         size: 50,
@@ -183,8 +183,8 @@ class _SwipeScreenState extends State<SwipeScreen> {
                         engine?.currentItem?.nope();
                       },
                       style: ElevatedButton.styleFrom(
-                          shape: CircleBorder(),
-                          padding: EdgeInsets.all(10),
+                          shape: const CircleBorder(),
+                          padding: const EdgeInsets.all(10),
                           primary: Colors.white),
                     ),
                   )),

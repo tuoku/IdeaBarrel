@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ideabarrel/ui/screens/shop_screen.dart';
 
 class LeaderboardScreen extends StatefulWidget {
-  LeaderboardScreen({Key? key}) : super(key: key);
+  const LeaderboardScreen({Key? key}) : super(key: key);
 
   @override
   State<LeaderboardScreen> createState() => _LeaderboardScreenState();
@@ -12,7 +12,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: ListView(children: [
         Card(
             shape:
@@ -21,8 +21,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                 borderRadius: BorderRadius.circular(16),
                 child: Container(
                   height: 150,
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
+                  padding: const EdgeInsets.all(20),
+                  decoration: const BoxDecoration(
                       gradient: LinearGradient(colors: [
                     Color.fromARGB(255, 44, 143, 224),
                     Color.fromARGB(255, 18, 195, 226)
@@ -33,7 +33,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
+                          children: const [
                             Text(
                               "My points:",
                               style:
@@ -51,37 +51,37 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         IconButton(
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (c) => ShopScreen()));
+                                builder: (c) => const ShopScreen()));
                           },
-                          icon: Icon(Icons.shopping_cart),
+                          icon: const Icon(Icons.shopping_cart),
                           color: Colors.white,
                           iconSize: 44,
                         )
                       ]),
                 ))),
-        SizedBox(
+        const SizedBox(
           height: 15,
         ),
-        Text(
+        const Text(
           "Top innovators",
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         Row(
           children: [
-            CircleAvatar(
+            const CircleAvatar(
               radius: 25,
               backgroundImage: AssetImage("assets/ukko1.jpeg"),
             ),
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   "Matti Meikäläinen",
                   style: TextStyle(fontSize: 18),
                 ),
@@ -91,16 +91,16 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                       height: 20,
                       width: 250,
                       decoration: BoxDecoration(
-                          gradient: LinearGradient(colors: [
+                          gradient: const LinearGradient(colors: [
                             Color.fromARGB(255, 44, 143, 224),
                             Color.fromARGB(255, 18, 195, 226)
                           ]),
                           borderRadius: BorderRadius.circular(16)),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
-                    Text(
+                    const Text(
                       "4031",
                       style: TextStyle(fontSize: 16),
                     )
@@ -110,22 +110,22 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
             ),
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         Row(
           children: [
-            CircleAvatar(
+            const CircleAvatar(
               radius: 25,
               backgroundImage: AssetImage("assets/ukko2.jpeg"),
             ),
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   "Maija Muikkeli",
                   style: TextStyle(fontSize: 18),
                 ),
@@ -135,16 +135,16 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                       height: 20,
                       width: 200,
                       decoration: BoxDecoration(
-                          gradient: LinearGradient(colors: [
+                          gradient: const LinearGradient(colors: [
                             Color.fromARGB(255, 44, 143, 224),
                             Color.fromARGB(255, 18, 195, 226)
                           ]),
                           borderRadius: BorderRadius.circular(16)),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
-                    Text(
+                    const Text(
                       "3701",
                       style: TextStyle(fontSize: 16),
                     )
@@ -154,22 +154,22 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
             ),
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         Row(
           children: [
-            CircleAvatar(
+            const CircleAvatar(
               radius: 25,
               backgroundImage: AssetImage("assets/ukko3.jpeg"),
             ),
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   "Teppo Teikäläinen",
                   style: TextStyle(fontSize: 18),
                 ),
@@ -179,16 +179,16 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                       height: 20,
                       width: 130,
                       decoration: BoxDecoration(
-                          gradient: LinearGradient(colors: [
+                          gradient: const LinearGradient(colors: [
                             Color.fromARGB(255, 44, 143, 224),
                             Color.fromARGB(255, 18, 195, 226)
                           ]),
                           borderRadius: BorderRadius.circular(16)),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
-                    Text(
+                    const Text(
                       "2800",
                       style: TextStyle(fontSize: 16),
                     )
@@ -198,27 +198,27 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
             ),
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 25,
         ),
-        Text(
+        const Text(
           "Most liked ideas",
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
-        Card(
+        const Card(
             child: ListTile(
           title: Text("Työnnettävä mikroaaltouuni"),
           subtitle: Text("442 likes"),
         )),
-        Card(
+        const Card(
             child: ListTile(
           title: Text("Limukone aulaan!!"),
           subtitle: Text("310 likes"),
         )),
-        Card(
+        const Card(
             child: ListTile(
           title: Text("Lisää parkkipaikkoja"),
           subtitle: Text("277 likes"),

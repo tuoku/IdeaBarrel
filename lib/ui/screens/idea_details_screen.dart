@@ -21,15 +21,15 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
           tag: widget.index,
           child: widget.child,
         ),
-        Text(
+        const Text(
           "  Comments",
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-        SizedBox(
+        const SizedBox(
           height: 15,
         ),
         Row(
-          children: [
+          children: const [
             SizedBox(
               width: 10,
             ),
@@ -42,11 +42,11 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
             Text("Hyvä idea!!!!!!!")
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 20,
         ),
         Row(
-          children: [
+          children: const [
             SizedBox(
               width: 10,
             ),
@@ -59,11 +59,11 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
             Text("Uijuma")
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 20,
         ),
         Row(
-          children: [
+          children: const [
             SizedBox(
               width: 10,
             ),
@@ -76,7 +76,7 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
             Text("😍😍😍😍😍😍😍😍")
           ],
         ),
-        Positioned(
+        const Positioned(
           bottom: 0,
           child: TextField(
             decoration: InputDecoration(labelText: "Write a comment"),
@@ -84,6 +84,5 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
         )
       ],
     ));
-    ;
   }
 }

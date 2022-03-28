@@ -18,13 +18,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Root(),
+      home: const Root(),
     );
   }
 }
 
 class Root extends StatefulWidget {
-  Root({Key? key}) : super(key: key);
+  const Root({Key? key}) : super(key: key);
 
   @override
   State<Root> createState() => _RootState();
@@ -42,19 +42,19 @@ class _RootState extends State<Root> {
           ? FloatingActionButton(
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(builder: (c) {
-                  return NewIdeaScreen();
+                  return const NewIdeaScreen();
                 }));
               },
-              child: Icon(Icons.add),
+              child: const Icon(Icons.add),
             )
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: currentPage == 0 || currentPage == 1
           ? BottomAppBar(
-              shape: CircularNotchedRectangle(),
+              shape: const CircularNotchedRectangle(),
               notchMargin: 10,
               child: Container(
-                padding: EdgeInsets.only(left: 30, right: 30),
+                padding: const EdgeInsets.only(left: 30, right: 30),
                 height: 60,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -78,7 +78,7 @@ class _RootState extends State<Root> {
                         onPressed: () {
                           setState(() {
                             currentPage = 1;
-                            body = LeaderboardScreen();
+                            body = const LeaderboardScreen();
                           });
                         },
                         child: Icon(
