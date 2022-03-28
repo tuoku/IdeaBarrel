@@ -12,7 +12,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(9),
+      padding: EdgeInsets.all(10),
       child: ListView(children: [
         Card(
             shape:
