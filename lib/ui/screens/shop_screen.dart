@@ -29,7 +29,6 @@ class _ShopScreenState extends State<ShopScreen> {
                       scrollDirection: Axis.horizontal,
                       children: [
                         Card(
-                            child: Container(
                           child: Column(children: [
                             const Text(
                               "T-shirt",
@@ -57,9 +56,8 @@ class _ShopScreenState extends State<ShopScreen> {
                               color: Colors.blue,
                             )
                           ]),
-                        )),
+                        ),
                         Card(
-                            child: Container(
                           child: Column(children: [
                             const Text(
                               "Cap",
@@ -87,9 +85,8 @@ class _ShopScreenState extends State<ShopScreen> {
                               color: Colors.blue,
                             )
                           ]),
-                        )),
+                        ),
                         Card(
-                            child: Container(
                           child: Column(children: [
                             const Text(
                               "Hoodie",
@@ -117,7 +114,7 @@ class _ShopScreenState extends State<ShopScreen> {
                               color: Colors.blue,
                             )
                           ]),
-                        )),
+                        ),
                       ],
                     )),
                 const SizedBox(
@@ -134,7 +131,6 @@ class _ShopScreenState extends State<ShopScreen> {
                       scrollDirection: Axis.horizontal,
                       children: [
                         Card(
-                            child: Container(
                           child: Column(children: [
                             const Text(
                               "Movie ticket",
@@ -162,9 +158,8 @@ class _ShopScreenState extends State<ShopScreen> {
                               color: Colors.blue,
                             )
                           ]),
-                        )),
+                        ),
                         Card(
-                            child: Container(
                           child: Column(children: [
                             const Text(
                               "Hockey game ticket",
@@ -192,9 +187,8 @@ class _ShopScreenState extends State<ShopScreen> {
                               color: Colors.blue,
                             )
                           ]),
-                        )),
+                        ),
                         Card(
-                            child: Container(
                           child: Column(children: [
                             const Text(
                               "Opera ticket",
@@ -222,7 +216,7 @@ class _ShopScreenState extends State<ShopScreen> {
                               color: Colors.blue,
                             )
                           ]),
-                        )),
+                        ),
                       ],
                     )),
               ],

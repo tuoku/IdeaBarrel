@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class IdeaDetailsScreen extends StatefulWidget {
-  IdeaDetailsScreen({Key? key, required this.child, required this.index})
+  const IdeaDetailsScreen({Key? key, required this.child, required this.index})
       : super(key: key);
 
-  int index;
-  Widget child;
+  final int index;
+  final Widget child;
   @override
   State<IdeaDetailsScreen> createState() => _IdeaDetailsScreenState();
 }
