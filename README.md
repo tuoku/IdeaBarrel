@@ -1,3 +1,3 @@
 # IdeaBarrel
 
-## Gamified idea management solution developed for internal use at Nokia
+### Gamified idea management solution developed for internal use at Nokia
