@@ -50,8 +50,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         ),
                         IconButton(
                           onPressed: () {
-                            Navigator.of(context).push(
-                                MaterialPageRoute(builder: (c) => ShopScreen()));
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (c) => ShopScreen()));
                           },
                           icon: Icon(Icons.shopping_cart),
                           color: Colors.white,
