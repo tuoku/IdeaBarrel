@@ -68,9 +68,14 @@ class _NewIdeaScreenState extends State<NewIdeaScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 20,),
-              Align(alignment: Alignment.center, child: ElevatedButton(onPressed: () {}, child: const Text("Submit")),)
-              
+              const SizedBox(
+                height: 20,
+              ),
+              Align(
+                alignment: Alignment.center,
+                child: ElevatedButton(
+                    onPressed: () {}, child: const Text("Submit")),
+              )
             ],
           )),
     );
