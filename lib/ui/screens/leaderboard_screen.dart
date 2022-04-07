@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ideabarrel/ui/screens/all_ideas_screen.dart';
 import 'package:ideabarrel/ui/screens/shop_screen.dart';
 
 class LeaderboardScreen extends StatefulWidget {
@@ -201,10 +202,18 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
         const SizedBox(
           height: 25,
         ),
-        const Text(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+          const Text(
           "Most liked ideas",
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
+        TextButton(onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (c) => AllIdeasScreen()));
+        }, child: Text("View all"))
+        ],),
+        
         const SizedBox(
           height: 10,
         ),
