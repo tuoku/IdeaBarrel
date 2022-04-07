@@ -205,15 +205,18 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-          const Text(
-          "Most liked ideas",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            const Text(
+              "Most liked ideas",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (c) => const AllIdeasScreen()));
+                },
+                child: const Text("View all"))
+          ],
         ),
-        TextButton(onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (c) => AllIdeasScreen()));
-        }, child: Text("View all"))
-        ],),
-        
         const SizedBox(
           height: 10,
         ),

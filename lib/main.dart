@@ -6,7 +6,7 @@ import 'package:ideabarrel/ui/screens/new_idea_screen.dart';
 import 'package:ideabarrel/ui/screens/swipe_screen.dart';
 
 final routeObserver = RouteObserver<PageRoute>();
-final duration = const Duration(milliseconds: 300);
+const duration = Duration(milliseconds: 300);
 void main() {
   runApp(const MyApp());
 }
@@ -20,9 +20,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        unselectedWidgetColor: Colors.white
-      ),
+          primarySwatch: Colors.blue, unselectedWidgetColor: Colors.white),
       navigatorObservers: [routeObserver],
       home: const Root(),
     );
@@ -39,7 +37,7 @@ class Root extends StatefulWidget {
 class _RootState extends State<Root> with RouteAware {
   var currentPage = 0;
   Widget body = SwipeScreen();
-  GlobalKey _fabKey = GlobalKey();
+  final GlobalKey _fabKey = GlobalKey();
   bool _fabVisible = true;
 
   @override
@@ -70,8 +68,7 @@ class _RootState extends State<Root> with RouteAware {
       body: body,
       floatingActionButton: currentPage == 0 || currentPage == 1
           ? Visibility(
-              visible: _fabVisible,
-              child: _buildFAB(context, key: _fabKey))
+              visible: _fabVisible, child: _buildFAB(context, key: _fabKey))
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: currentPage == 0 || currentPage == 1
@@ -124,19 +121,19 @@ class _RootState extends State<Root> with RouteAware {
     );
   }
 
-    Widget _buildFAB(context, {key}) => FloatingActionButton(
+  Widget _buildFAB(context, {key}) => FloatingActionButton(
         elevation: 0,
         key: key,
         onPressed: () => _onFabTap(context),
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       );
 
-_onFabTap(BuildContext context) {
-    
+  _onFabTap(BuildContext context) {
     // Hide the FAB on transition start
     setState(() => _fabVisible = false);
 
-    final RenderBox fabRenderBox = _fabKey.currentContext?.findRenderObject() as RenderBox;
+    final RenderBox fabRenderBox =
+        _fabKey.currentContext?.findRenderObject() as RenderBox;
     final fabSize = fabRenderBox.size;
     final fabOffset = fabRenderBox.localToGlobal(Offset.zero);
 
@@ -144,14 +141,14 @@ _onFabTap(BuildContext context) {
       transitionDuration: duration,
       pageBuilder: (BuildContext context, Animation<double> animation,
               Animation<double> secondaryAnimation) =>
-          NewIdeaScreen(),
+          const NewIdeaScreen(),
       transitionsBuilder: (BuildContext context, Animation<double> animation,
               Animation<double> secondaryAnimation, Widget child) =>
           _buildTransition(child, animation, fabSize, fabOffset),
     ));
   }
 
-   Widget _buildTransition(
+  Widget _buildTransition(
     Widget page,
     Animation<double> animation,
     Size fabSize,
@@ -208,5 +205,3 @@ _onFabTap(BuildContext context) {
     );
   }
 }
-
-
