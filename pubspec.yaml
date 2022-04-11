@@ -39,6 +39,9 @@ dependencies:
   show_up_animation: ^2.0.0
   confetti: ^0.6.0
   page_view_indicators: ^2.0.0
+  crypto: ^3.0.1
+  hex: ^0.2.0
+  flutter_dotenv: ^5.0.2
 
 dev_dependencies:
   flutter_test:
@@ -69,6 +72,7 @@ flutter:
 
   assets: 
     - assets/
+    - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -1,13 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:ideabarrel/ui/screens/leaderboard_screen.dart';
 import 'package:ideabarrel/ui/screens/new_idea_screen.dart';
 import 'package:ideabarrel/ui/screens/swipe_screen.dart';
 
 final routeObserver = RouteObserver<PageRoute>();
 const duration = Duration(milliseconds: 300);
-void main() {
+void main() async {
+  await dotenv.load(fileName: '.env');
   runApp(const MyApp());
 }
 
