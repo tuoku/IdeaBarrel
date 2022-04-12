@@ -7,6 +7,8 @@ import 'package:swipe_cards/swipe_cards.dart';
 class SwipeScreen extends StatefulWidget {
   SwipeScreen({Key? key}) : super(key: key);
 
+  final demoMode = true;
+
   final ideas = <SwipeItem>[
     SwipeItem(
       content: {
@@ -53,23 +55,34 @@ class _SwipeScreenState extends State<SwipeScreen> {
 
   @override
   void initState() {
-    CosmosRepo().getAllIdeas().then((value) {
+    if (widget.demoMode) {
       WidgetsBinding.instance!.addPostFrameCallback(
         (timeStamp) {
-          if (kDebugMode) print("Ideas fetched: ${value.length}");
           setState(() {
-            ideas = List.generate(value.length, (i) {
-              return SwipeItem(content: {
-                "title": value[i].title,
-                "desc": value[i].description,
-                "imgs": value[i].imgs
-              });
-            });
-            engine = MatchEngine(swipeItems: ideas);
+            ideas = widget.ideas;
+            engine = MatchEngine(swipeItems: widget.ideas);
           });
         },
       );
-    });
+    } else {
+      CosmosRepo().getAllIdeas().then((value) {
+        WidgetsBinding.instance!.addPostFrameCallback(
+          (timeStamp) {
+            if (kDebugMode) print("Ideas fetched: ${value.length}");
+            setState(() {
+              ideas = List.generate(value.length, (i) {
+                return SwipeItem(content: {
+                  "title": value[i].title,
+                  "desc": value[i].description,
+                  "imgs": value[i].imgs
+                });
+              });
+              engine = MatchEngine(swipeItems: ideas);
+            });
+          },
+        );
+      });
+    }
 
     super.initState();
   }
@@ -96,15 +109,20 @@ class _SwipeScreenState extends State<SwipeScreen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        height: MediaQuery.of(context).size.height * 0.6,
+                        // height: MediaQuery.of(context).size.height * 0.6,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             ClipRRect(
                                 borderRadius: BorderRadius.circular(16),
-                                child: Image(
-                                    image: NetworkImage(
-                                        ideas[index].content['imgs'][0]))),
+                                child: widget.demoMode
+                                    ? Image(
+                                        image: AssetImage(
+                                            'assets/${ideas[index].content["asset"]}'),
+                                      )
+                                    : Image(
+                                        image: NetworkImage(
+                                            ideas[index].content['imgs'][0]))),
                             const SizedBox(
                               height: 10,
                             ),

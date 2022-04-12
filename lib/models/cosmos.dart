@@ -11,7 +11,7 @@ class Cosmos {
 
   Cosmos({required this.documentDBMasterKey});
 
-  Future queryCosmos({url, method, body}) async {
+  Future queryCosmos({url, method, body, isQuery, micros}) async {
     String auth;
     String documentDBMasterKey = this.documentDBMasterKey;
 
@@ -89,15 +89,24 @@ class Cosmos {
         'type=' + masterToken + '&ver=' + tokenVersion + '&sig=' + base64Bits);
     if (kDebugMode) print('auth= $auth');
 
-    Map<String, String> headers = {
-      'Accept': 'application/json',
-      'x-ms-version': '2016-07-11',
-      'Authorization': auth,
-      'x-ms-date': utcString,
-      'x-ms-documentdb-isquery': 'true',
-      'Content-Type': 'application/query+json',
-      'x-ms-documentdb-query-enablecrosspartition': 'true',
-    };
+    Map<String, String> headers = isQuery
+        ? {
+            'Accept': 'application/json',
+            'x-ms-version': '2016-07-11',
+            'Authorization': auth,
+            'x-ms-date': utcString,
+            'x-ms-documentdb-isquery': 'true',
+            'Content-Type': 'application/query+json',
+            'x-ms-documentdb-query-enablecrosspartition': 'true',
+          }
+        : {
+            'x-ms-documentdb-is-upsert': "true",
+            'Accept': 'application/json',
+            'x-ms-version': '2016-07-11',
+            'Authorization': auth,
+            'x-ms-date': utcString,
+            'x-ms-documentdb-partitionkey': '["$micros"]'
+          };
 
     Future<String> readResponse(HttpClientResponse response) {
       final completer = Completer<String>();

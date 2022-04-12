@@ -450,6 +450,7 @@ class __SubmitPageState extends State<_SubmitPage> {
                           child: CircularProgressIndicator(),
                         );
                       });
+
                       await Future.delayed(const Duration(seconds: 1))
                           .then((_) {
                         setState(() {
@@ -459,6 +460,25 @@ class __SubmitPageState extends State<_SubmitPage> {
                         });
                         cc.play();
                       });
+
+                      /*
+                      await CosmosRepo().postIdea(Idea(
+                        comments: [], 
+                        description: "123", 
+                        imgs: ["https://i.ytimg.com/vi/oiKj0Z_Xnjc/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLBLI_49_1uquyrXfdPXyZXt_qLocg"], 
+                        score: 0, 
+                        submittedAt: DateTime.now(), 
+                        submitterUID: 0, 
+                        title: "halojaa"))
+                          .then((_) {
+                        setState(() {
+                          _btnChild = const Text("Submitted!",
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 20));
+                        });
+                        cc.play();
+                      });
+                      */
                     },
                   )),
             ],

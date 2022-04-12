@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:ideabarrel/models/comment.dart';
 
@@ -17,6 +20,7 @@ class CosmosRepo {
 
   Future<List<Idea>> getAllIdeas() async {
     Map<String, dynamic> res = await cosmos.queryCosmos(
+        isQuery: true,
         url:
             'https://ideabarrel.documents.azure.com:443/dbs/Ideas/colls/Ideas/docs',
         method: 'GET');
@@ -41,5 +45,33 @@ class CosmosRepo {
           }),
           submitterUID: maps[i]['submitterUID']);
     });
+  }
+
+  // returns true if success, false if not
+  Future<bool> postIdea(Idea idea) async {
+    String micros = DateTime.now().microsecondsSinceEpoch.toString();
+    final Map<String, dynamic> body = {
+      "id": micros,
+      "title": idea.title,
+      "description": idea.description,
+      "submittedAt": DateTime.now().millisecondsSinceEpoch,
+      "imgs": idea.imgs,
+      "submitterUID": idea.submitterUID,
+      "score": 0,
+      "comments": [],
+    };
+
+    if (kDebugMode) print(jsonEncode(body));
+
+    Map<String, dynamic> res = await cosmos.queryCosmos(
+        url:
+            'https://ideabarrel.documents.azure.com:443/dbs/Ideas/colls/Ideas/docs',
+        method: 'POST',
+        body: body,
+        isQuery: false,
+        micros: micros);
+
+    if (kDebugMode) print(res);
+    return true;
   }
 }
