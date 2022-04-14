@@ -237,6 +237,10 @@ class _DeptPage extends StatefulWidget {
 }
 
 class __DeptPageState extends State<_DeptPage> {
+  bool hr = false;
+  bool wr = false;
+  bool st = false;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -283,11 +287,17 @@ class __DeptPageState extends State<_DeptPage> {
                   "Responsible for physical improvements to the workplace",
                   style: TextStyle(color: Colors.grey[300]),
                 ),
+                value: wr,
                 onChanged: (b) {
                   widget.callback(
                       (b != null) ? Department.workplaceResources : b);
+                      setState(() {
+                        wr = b ?? false;
+                        hr = false;
+                        st = false;
+                      });
                 },
-                value: false,
+               
               )),
           const SizedBox(
             height: 40,
@@ -308,10 +318,16 @@ class __DeptPageState extends State<_DeptPage> {
                   "Responsible for the well-being of people",
                   style: TextStyle(color: Colors.grey[300]),
                 ),
+                value: hr,
                 onChanged: (b) {
                   widget.callback((b != null) ? Department.humanResources : b);
+                  setState(() {
+                    hr = b ?? false;
+                    st = false;
+                    wr = false;
+                  });
                 },
-                value: false,
+                
               )),
           const SizedBox(
             height: 40,
@@ -332,10 +348,16 @@ class __DeptPageState extends State<_DeptPage> {
                   "Everything else",
                   style: TextStyle(color: Colors.grey[300]),
                 ),
+                value: st,
                 onChanged: (b) {
                   widget.callback((b != null) ? Department.siteTeam : b);
+                  setState(() {
+                    st = b ?? false;
+                    hr = false;
+                    wr = false;
+                  });
                 },
-                value: false,
+                
               )),
         ],
       ),
