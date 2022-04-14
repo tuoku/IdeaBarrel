@@ -291,13 +291,12 @@ class __DeptPageState extends State<_DeptPage> {
                 onChanged: (b) {
                   widget.callback(
                       (b != null) ? Department.workplaceResources : b);
-                      setState(() {
-                        wr = b ?? false;
-                        hr = false;
-                        st = false;
-                      });
+                  setState(() {
+                    wr = b ?? false;
+                    hr = false;
+                    st = false;
+                  });
                 },
-               
               )),
           const SizedBox(
             height: 40,
@@ -327,7 +326,6 @@ class __DeptPageState extends State<_DeptPage> {
                     wr = false;
                   });
                 },
-                
               )),
           const SizedBox(
             height: 40,
@@ -357,7 +355,6 @@ class __DeptPageState extends State<_DeptPage> {
                     wr = false;
                   });
                 },
-                
               )),
         ],
       ),
@@ -377,6 +374,13 @@ class _PhotosPage extends StatefulWidget {
 
 class __PhotosPageState extends State<_PhotosPage> {
   final ImagePicker _picker = ImagePicker();
+  Map<int, XFile> imgs = {};
+  @override
+  void initState() {
+    //imgs = widget.getImgs()
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -413,21 +417,29 @@ class __PhotosPageState extends State<_PhotosPage> {
               curve: Curves.easeIn,
               direction: Direction.horizontal,
               offset: -0.2,
-              child: (widget.getImgs() as Map<String, XFile>)[0] != null
-                  ? Image(
-                      image: FileImage(File(
-                          (widget.getImgs() as Map<String, XFile>)[0]?.path ??
-                              "")),
-                    )
+              child: imgs[0] != null
+                  ? Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16)),
+                      elevation: 10,
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Image(
+                            width: 120,
+                            height: 120,
+                            fit: BoxFit.cover,
+                            image: FileImage(File(imgs[0]?.path ?? "")),
+                          )))
                   : InkWell(
                       onTap: () async {
                         final XFile? photo = await _picker.pickImage(
                             source: ImageSource.camera, imageQuality: 75);
                         if (photo != null) {
+                          setState(() {
+                            imgs[0] = photo;
+                          });
                           StorageRepo().uploadImage(photo).then((value) {
-                            setState(() {
-                              widget.addImg(photo, value ?? "");
-                            });
+                            widget.addImg(photo, value ?? "");
                           });
                         }
                       },
@@ -439,37 +451,93 @@ class __PhotosPageState extends State<_PhotosPage> {
                               Icons.add_a_photo,
                               size: 40,
                             )),
-                      ))),
+                      )
+                      )
+                      ),
           ShowUpAnimation(
               delayStart: const Duration(milliseconds: 100),
               animationDuration: const Duration(milliseconds: 600),
               curve: Curves.easeIn,
               direction: Direction.horizontal,
               offset: -0.2,
-              child: const Card(
-                elevation: 10,
-                child: Padding(
-                    padding: EdgeInsets.all(40),
-                    child: Icon(
-                      Icons.add_a_photo,
-                      size: 40,
-                    )),
-              )),
+              child: imgs[1] != null
+                  ? Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16)),
+                      elevation: 10,
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Image(
+                            width: 120,
+                            height: 120,
+                            fit: BoxFit.cover,
+                            image: FileImage(File(imgs[1]?.path ?? "")),
+                          )))
+                  : InkWell(
+                      onTap: () async {
+                        final XFile? photo = await _picker.pickImage(
+                            source: ImageSource.camera, imageQuality: 75);
+                        if (photo != null) {
+                          setState(() {
+                            imgs[1] = photo;
+                          });
+                          StorageRepo().uploadImage(photo).then((value) {
+                            widget.addImg(photo, value ?? "");
+                          });
+                        }
+                      },
+                      child: Card(
+                        elevation: 10,
+                        child: Padding(
+                            padding: EdgeInsets.all(40),
+                            child: Icon(
+                              Icons.add_a_photo,
+                              size: 40,
+                            )),
+                      )
+                      )),
           ShowUpAnimation(
               delayStart: const Duration(milliseconds: 100),
               animationDuration: const Duration(milliseconds: 600),
               curve: Curves.easeIn,
               direction: Direction.horizontal,
               offset: -0.2,
-              child: const Card(
-                elevation: 10,
-                child: Padding(
-                    padding: EdgeInsets.all(40),
-                    child: Icon(
-                      Icons.add_a_photo,
-                      size: 40,
-                    )),
-              )),
+              child: imgs[2] != null
+                  ? Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16)),
+                      elevation: 10,
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Image(
+                            width: 120,
+                            height: 120,
+                            fit: BoxFit.cover,
+                            image: FileImage(File(imgs[2]?.path ?? "")),
+                          )))
+                  : InkWell(
+                      onTap: () async {
+                        final XFile? photo = await _picker.pickImage(
+                            source: ImageSource.camera, imageQuality: 75);
+                        if (photo != null) {
+                          setState(() {
+                            imgs[2] = photo;
+                          });
+                          StorageRepo().uploadImage(photo).then((value) {
+                            widget.addImg(photo, value ?? "");
+                          });
+                        }
+                      },
+                      child: Card(
+                        elevation: 10,
+                        child: Padding(
+                            padding: EdgeInsets.all(40),
+                            child: Icon(
+                              Icons.add_a_photo,
+                              size: 40,
+                            )),
+                      )
+                      )),
         ],
       ),
     );
@@ -563,9 +631,7 @@ class __SubmitPageState extends State<_SubmitPage> {
                           .postIdea(Idea(
                               comments: [],
                               description: widget.desc.text,
-                              imgs: (i as Map<String, XFile>)
-                                  .keys
-                                  .toList(),
+                              imgs: (i as Map<String, XFile>).keys.toList(),
                               score: 0,
                               submittedAt: DateTime.now(),
                               submitterUID: 0,
