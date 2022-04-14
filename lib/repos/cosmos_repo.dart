@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:ideabarrel/misc/enums.dart';
 import 'package:ideabarrel/models/comment.dart';
 
 import '../models/cosmos.dart';
@@ -43,6 +44,7 @@ class CosmosRepo {
           imgs: List.generate(maps[i]['imgs'].length, (iii) {
             return maps[i]['imgs'][iii].toString();
           }),
+          department: Department.values.firstWhere((e) => e.toString() == maps[i]['department']),
           submitterUID: maps[i]['submitterUID']);
     });
   }
@@ -58,6 +60,7 @@ class CosmosRepo {
       "imgs": idea.imgs,
       "submitterUID": idea.submitterUID,
       "score": 0,
+      "department": idea.department.toString(),
       "comments": [],
     };
 

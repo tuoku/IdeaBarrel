@@ -1,7 +1,15 @@
+import 'dart:io';
+
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
+import 'package:ideabarrel/misc/enums.dart';
+import 'package:ideabarrel/repos/storage_repo.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:page_view_indicators/step_page_indicator.dart';
 import 'package:show_up_animation/show_up_animation.dart';
+
+import '../../models/idea.dart';
+import '../../repos/cosmos_repo.dart';
 
 class NewIdeaScreen extends StatefulWidget {
   const NewIdeaScreen({Key? key}) : super(key: key);
@@ -13,6 +21,25 @@ class NewIdeaScreen extends StatefulWidget {
 class _NewIdeaScreenState extends State<NewIdeaScreen> {
   final _pageController = PageController();
   final _currentPageNotifier = ValueNotifier<int>(0);
+
+  final titleController = TextEditingController();
+  final descController = TextEditingController();
+  Department? selectedDepartment;
+  final Map<String, XFile> imgs = {};
+
+  void setDept(Department? dept) {
+    selectedDepartment = dept;
+  }
+
+  Department? getDept() {
+    return selectedDepartment;
+  }
+
+  void addImg(XFile img, String url) {
+    imgs[url] = img;
+  }
+
+  Map<String, XFile> getImgs() => imgs;
 
   @override
   Widget build(BuildContext context) {
@@ -49,19 +76,34 @@ class _NewIdeaScreenState extends State<NewIdeaScreen> {
             _currentPageNotifier.value = index;
           },
           controller: _pageController,
-          children: const [
-            _TitlePage(),
-            _DescPage(),
-            _DeptPage(),
-            _PhotosPage(),
-            _SubmitPage(),
+          children: [
+            _TitlePage(
+              controller: titleController,
+            ),
+            _DescPage(
+              controller: descController,
+            ),
+            _DeptPage(
+              callback: setDept,
+            ),
+            _PhotosPage(
+              addImg: addImg,
+              getImgs: getImgs,
+            ),
+            _SubmitPage(
+              title: titleController,
+              desc: descController,
+              getDept: getDept,
+              getImgs: getImgs,
+            ),
           ],
         ));
   }
 }
 
 class _TitlePage extends StatefulWidget {
-  const _TitlePage({Key? key}) : super(key: key);
+  _TitlePage({Key? key, required this.controller}) : super(key: key);
+  TextEditingController controller;
 
   @override
   State<_TitlePage> createState() => __TitlePageState();
@@ -105,6 +147,7 @@ class __TitlePageState extends State<_TitlePage> {
             direction: Direction.horizontal,
             offset: -0.2,
             child: TextField(
+              controller: widget.controller,
               decoration: InputDecoration(
                 hintText: "Title",
                 fillColor: Colors.white,
@@ -122,7 +165,8 @@ class __TitlePageState extends State<_TitlePage> {
 }
 
 class _DescPage extends StatefulWidget {
-  const _DescPage({Key? key}) : super(key: key);
+  _DescPage({Key? key, required this.controller}) : super(key: key);
+  TextEditingController controller;
 
   @override
   State<_DescPage> createState() => __DescPageState();
@@ -166,6 +210,7 @@ class __DescPageState extends State<_DescPage> {
             direction: Direction.horizontal,
             offset: -0.2,
             child: TextField(
+              controller: widget.controller,
               maxLines: 10,
               decoration: InputDecoration(
                 hintText: "Description",
@@ -184,7 +229,8 @@ class __DescPageState extends State<_DescPage> {
 }
 
 class _DeptPage extends StatefulWidget {
-  const _DeptPage({Key? key}) : super(key: key);
+  _DeptPage({Key? key, required this.callback}) : super(key: key);
+  Function callback;
 
   @override
   State<_DeptPage> createState() => __DeptPageState();
@@ -237,7 +283,10 @@ class __DeptPageState extends State<_DeptPage> {
                   "Responsible for physical improvements to the workplace",
                   style: TextStyle(color: Colors.grey[300]),
                 ),
-                onChanged: (b) {},
+                onChanged: (b) {
+                  widget.callback(
+                      (b != null) ? Department.workplaceResources : b);
+                },
                 value: false,
               )),
           const SizedBox(
@@ -259,7 +308,9 @@ class __DeptPageState extends State<_DeptPage> {
                   "Responsible for the well-being of people",
                   style: TextStyle(color: Colors.grey[300]),
                 ),
-                onChanged: (b) {},
+                onChanged: (b) {
+                  widget.callback((b != null) ? Department.humanResources : b);
+                },
                 value: false,
               )),
           const SizedBox(
@@ -281,7 +332,9 @@ class __DeptPageState extends State<_DeptPage> {
                   "Everything else",
                   style: TextStyle(color: Colors.grey[300]),
                 ),
-                onChanged: (b) {},
+                onChanged: (b) {
+                  widget.callback((b != null) ? Department.siteTeam : b);
+                },
                 value: false,
               )),
         ],
@@ -291,13 +344,17 @@ class __DeptPageState extends State<_DeptPage> {
 }
 
 class _PhotosPage extends StatefulWidget {
-  const _PhotosPage({Key? key}) : super(key: key);
+  _PhotosPage({Key? key, required this.addImg, required this.getImgs})
+      : super(key: key);
+  Function addImg;
+  Function getImgs;
 
   @override
   State<_PhotosPage> createState() => __PhotosPageState();
 }
 
 class __PhotosPageState extends State<_PhotosPage> {
+  final ImagePicker _picker = ImagePicker();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -334,15 +391,33 @@ class __PhotosPageState extends State<_PhotosPage> {
               curve: Curves.easeIn,
               direction: Direction.horizontal,
               offset: -0.2,
-              child: const Card(
-                elevation: 10,
-                child: Padding(
-                    padding: EdgeInsets.all(40),
-                    child: Icon(
-                      Icons.add_a_photo,
-                      size: 40,
-                    )),
-              )),
+              child: (widget.getImgs() as Map<String, XFile>)[0] != null
+                  ? Image(
+                      image: FileImage(File(
+                          (widget.getImgs() as Map<String, XFile>)[0]?.path ??
+                              "")),
+                    )
+                  : InkWell(
+                      onTap: () async {
+                        final XFile? photo = await _picker.pickImage(
+                            source: ImageSource.camera, imageQuality: 75);
+                        if (photo != null) {
+                          StorageRepo().uploadImage(photo).then((value) {
+                            setState(() {
+                              widget.addImg(photo, value ?? "");
+                            });
+                          });
+                        }
+                      },
+                      child: Card(
+                        elevation: 10,
+                        child: Padding(
+                            padding: EdgeInsets.all(40),
+                            child: Icon(
+                              Icons.add_a_photo,
+                              size: 40,
+                            )),
+                      ))),
           ShowUpAnimation(
               delayStart: const Duration(milliseconds: 100),
               animationDuration: const Duration(milliseconds: 600),
@@ -380,7 +455,18 @@ class __PhotosPageState extends State<_PhotosPage> {
 }
 
 class _SubmitPage extends StatefulWidget {
-  const _SubmitPage({Key? key}) : super(key: key);
+  _SubmitPage(
+      {Key? key,
+      required this.getImgs,
+      required this.desc,
+      required this.getDept,
+      required this.title})
+      : super(key: key);
+
+  TextEditingController title;
+  TextEditingController desc;
+  Function getDept;
+  Function getImgs;
 
   @override
   State<_SubmitPage> createState() => __SubmitPageState();
@@ -450,8 +536,19 @@ class __SubmitPageState extends State<_SubmitPage> {
                           child: CircularProgressIndicator(),
                         );
                       });
-
-                      await Future.delayed(const Duration(seconds: 1))
+                      final i = widget.getImgs();
+                      await CosmosRepo()
+                          .postIdea(Idea(
+                              comments: [],
+                              description: widget.desc.text,
+                              imgs: (i as Map<String, XFile>)
+                                  .keys
+                                  .toList(),
+                              score: 0,
+                              submittedAt: DateTime.now(),
+                              submitterUID: 0,
+                              department: widget.getDept(),
+                              title: widget.title.text))
                           .then((_) {
                         setState(() {
                           _btnChild = const Text("Submitted!",
@@ -460,25 +557,6 @@ class __SubmitPageState extends State<_SubmitPage> {
                         });
                         cc.play();
                       });
-
-                      /*
-                      await CosmosRepo().postIdea(Idea(
-                        comments: [], 
-                        description: "123", 
-                        imgs: ["https://i.ytimg.com/vi/oiKj0Z_Xnjc/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLBLI_49_1uquyrXfdPXyZXt_qLocg"], 
-                        score: 0, 
-                        submittedAt: DateTime.now(), 
-                        submitterUID: 0, 
-                        title: "halojaa"))
-                          .then((_) {
-                        setState(() {
-                          _btnChild = const Text("Submitted!",
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 20));
-                        });
-                        cc.play();
-                      });
-                      */
                     },
                   )),
             ],
