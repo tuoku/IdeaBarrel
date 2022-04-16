@@ -1,3 +1,4 @@
+import 'package:ideabarrel/misc/enums.dart';
 import 'package:ideabarrel/models/comment.dart';
 
 class Idea {
@@ -8,6 +9,7 @@ class Idea {
   int score;
   List<Comment> comments;
   DateTime submittedAt;
+  Department? department;
 
   Idea(
       {required this.comments,
@@ -16,5 +18,6 @@ class Idea {
       required this.score,
       required this.submittedAt,
       required this.submitterUID,
+      required this.department,
       required this.title});
 }

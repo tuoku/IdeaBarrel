@@ -7,42 +7,6 @@ import 'package:swipe_cards/swipe_cards.dart';
 class SwipeScreen extends StatefulWidget {
   SwipeScreen({Key? key}) : super(key: key);
 
-  final demoMode = true;
-
-  final ideas = <SwipeItem>[
-    SwipeItem(
-      content: {
-        "title": "Limukone aulaan!!",
-        "asset": "limukone.jpg",
-        "desc":
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-      },
-    ),
-    SwipeItem(
-      content: {
-        "title": "Parkkipaikkoja lisää",
-        "asset": "parkkis.jpeg",
-        "desc":
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-      },
-    ),
-    SwipeItem(
-      content: {
-        "title": "BikeBoxit kampukselle 🥰🥰🥰",
-        "asset": "bikebox.jpg",
-        "desc":
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-      },
-    ),
-    SwipeItem(
-      content: {
-        "title": "Saisko tämmösen tänne",
-        "asset": "mikro.jpg",
-        "desc": "Ei jaksa ravata keittiössä kokoaja"
-      },
-    ),
-  ];
-
   @override
   State<SwipeScreen> createState() => _SwipeScreenState();
 }
@@ -55,34 +19,23 @@ class _SwipeScreenState extends State<SwipeScreen> {
 
   @override
   void initState() {
-    if (widget.demoMode) {
+    CosmosRepo().getAllIdeas().then((value) {
       WidgetsBinding.instance!.addPostFrameCallback(
         (timeStamp) {
+          if (kDebugMode) print("Ideas fetched: ${value.length}");
           setState(() {
-            ideas = widget.ideas;
-            engine = MatchEngine(swipeItems: widget.ideas);
+            ideas = List.generate(value.length, (i) {
+              return SwipeItem(content: {
+                "title": value[i].title,
+                "desc": value[i].description,
+                "imgs": value[i].imgs
+              });
+            });
+            engine = MatchEngine(swipeItems: ideas);
           });
         },
       );
-    } else {
-      CosmosRepo().getAllIdeas().then((value) {
-        WidgetsBinding.instance!.addPostFrameCallback(
-          (timeStamp) {
-            if (kDebugMode) print("Ideas fetched: ${value.length}");
-            setState(() {
-              ideas = List.generate(value.length, (i) {
-                return SwipeItem(content: {
-                  "title": value[i].title,
-                  "desc": value[i].description,
-                  "imgs": value[i].imgs
-                });
-              });
-              engine = MatchEngine(swipeItems: ideas);
-            });
-          },
-        );
-      });
-    }
+    });
 
     super.initState();
   }
@@ -115,14 +68,9 @@ class _SwipeScreenState extends State<SwipeScreen> {
                           children: [
                             ClipRRect(
                                 borderRadius: BorderRadius.circular(16),
-                                child: widget.demoMode
-                                    ? Image(
-                                        image: AssetImage(
-                                            'assets/${ideas[index].content["asset"]}'),
-                                      )
-                                    : Image(
-                                        image: NetworkImage(
-                                            ideas[index].content['imgs'][0]))),
+                                child: Image(
+                                    image: NetworkImage(
+                                        ideas[index].content['imgs'][0]))),
                             const SizedBox(
                               height: 10,
                             ),
