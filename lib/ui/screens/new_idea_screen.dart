@@ -83,6 +83,9 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
     });
   }
 
+  FocusNode descNode = FocusNode();
+  FocusNode titleNode = FocusNode();
+
   List<Widget> generatePages(List<PageModel> pages) {
     return List.generate(pages.length, (i) {
       return Container(
@@ -153,14 +156,53 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
             },
           ),
         ),
-        body: PageView(
-            physics:
-                BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-            onPageChanged: (int index) {
-              _currentPageNotifier.value = index;
-            },
-            controller: _pageController,
-            children: pages));
+        body: Stack(
+          children: [
+            PageView(
+                physics: BouncingScrollPhysics(
+                    parent: AlwaysScrollableScrollPhysics()),
+                onPageChanged: (int index) {
+                  setState(() {
+                    _currentPageNotifier.value = index;
+                  });
+                  
+                },
+                controller: _pageController,
+                children: pages),
+            Positioned(
+                top: MediaQuery.of(context).size.height / 2,
+                right: 0,
+                child: pages.length-1 > _currentPageNotifier.value 
+                    ? IconButton(
+                        onPressed: () {
+                          _pageController.nextPage(duration: Duration(milliseconds: 300),
+                           curve: Curves.easeIn);
+                        },
+                        icon: Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      )
+                    : SizedBox()),
+                    Positioned(
+                top: MediaQuery.of(context).size.height / 2,
+                left: 0,
+                child: _currentPageNotifier.value != 0
+                    ? IconButton(
+                        onPressed: () {
+                          _pageController.previousPage(duration: Duration(milliseconds: 300),
+                           curve: Curves.easeIn);
+                        },
+                        icon: Icon(
+                          Icons.arrow_back_ios_rounded,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      )
+                    : SizedBox())
+          ],
+        ));
   }
 
   @override
@@ -176,7 +218,7 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
           "Add some photos (optional)",
           style: titleStyle,
         ),
-        children: List.generate(maxImgs - 1, (i) {
+        children: List.generate(maxImgs, (i) {
           return StatefulBuilder(builder: ((context, setState) {
             return imgs.values.toList().length > i
                 ? Card(
@@ -307,7 +349,7 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
                           }
                           if (!checkboxValues.values.contains(true) &&
                               pages.length >= 4) {
-                            removePageRange(3, pages.length );
+                            removePageRange(3, pages.length);
                           }
                         });
                       },
@@ -322,20 +364,25 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
           ),
           children: [
             TextField(
+              focusNode: descNode,
+              onSubmitted: (value) => _pageController.nextPage(
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.easeIn),
+              autofocus: true,
               onChanged: (value) {
                 if (value.isNotEmpty && pages.length == 2) {
                   updatePages(generatePages([deptPage]).first);
-                  if(checkboxValues.containsValue(true)) {
+                  if (checkboxValues.containsValue(true)) {
                     updatePages(generatePages([photosPage]).first);
                     updatePages(generatePages([submitPage]).first);
                   }
                 }
                 if (value.isEmpty && pages.length >= 3) {
-                  removePageRange(2, pages.length );
+                  removePageRange(2, pages.length);
                 }
               },
               controller: descController,
-              maxLines: 10,
+              maxLines: 8,
               decoration: InputDecoration(
                 hintText: "Description*",
                 fillColor: Colors.white,
@@ -353,25 +400,31 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
           ),
           children: [
             TextField(
+              focusNode: titleNode,
+              autofocus: true,
               onChanged: (value) {
                 if (value.isNotEmpty && pages.length == 1) {
                   updatePages(generatePages([descPage]).first);
-                  if(descController.text.isNotEmpty) {
+                  if (descController.text.isNotEmpty) {
                     updatePages(generatePages([deptPage]).first);
-                    if(checkboxValues.containsValue(true)) {
-                    updatePages(generatePages([photosPage]).first);
-                    updatePages(generatePages([submitPage]).first);
+                    if (checkboxValues.containsValue(true)) {
+                      updatePages(generatePages([photosPage]).first);
+                      updatePages(generatePages([submitPage]).first);
+                    }
                   }
-                  }
-                  
                 }
                 if (value.isEmpty && pages.length >= 2) {
-                  removePageRange(1, pages.length );
+                  removePageRange(1, pages.length);
                 }
               },
-              onSubmitted: (value) => _pageController.nextPage(
+              onSubmitted: (value) {
+                
+                _pageController.nextPage(
                   duration: Duration(milliseconds: 300),
-                  curve: Curves.bounceIn),
+                  curve: Curves.easeIn);
+                  FocusScope.of(context).requestFocus(descNode);
+
+              } ,
               controller: titleController,
               decoration: InputDecoration(
                 hintText: "Title*",
