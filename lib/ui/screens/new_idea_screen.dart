@@ -165,18 +165,18 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
                   setState(() {
                     _currentPageNotifier.value = index;
                   });
-                  
                 },
                 controller: _pageController,
                 children: pages),
             Positioned(
                 top: MediaQuery.of(context).size.height / 2,
                 right: 0,
-                child: pages.length-1 > _currentPageNotifier.value 
+                child: pages.length - 1 > _currentPageNotifier.value
                     ? IconButton(
                         onPressed: () {
-                          _pageController.nextPage(duration: Duration(milliseconds: 300),
-                           curve: Curves.easeIn);
+                          _pageController.nextPage(
+                              duration: Duration(milliseconds: 300),
+                              curve: Curves.easeIn);
                         },
                         icon: Icon(
                           Icons.arrow_forward_ios_rounded,
@@ -185,14 +185,15 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
                         ),
                       )
                     : SizedBox()),
-                    Positioned(
+            Positioned(
                 top: MediaQuery.of(context).size.height / 2,
                 left: 0,
                 child: _currentPageNotifier.value != 0
                     ? IconButton(
                         onPressed: () {
-                          _pageController.previousPage(duration: Duration(milliseconds: 300),
-                           curve: Curves.easeIn);
+                          _pageController.previousPage(
+                              duration: Duration(milliseconds: 300),
+                              curve: Curves.easeIn);
                         },
                         icon: Icon(
                           Icons.arrow_back_ios_rounded,
@@ -235,8 +236,62 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
                         )))
                 : InkWell(
                     onTap: () async {
-                      final XFile? photo = await _picker.pickImage(
-                          source: ImageSource.camera, imageQuality: 75);
+                      final XFile? photo = await showDialog(
+                          context: context,
+                          builder: (context) {
+                            return SimpleDialog(
+                              title: Text("Add photo"),
+                              children: [
+                                SizedBox(
+                                  height: 30,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    InkWell(
+                                        onTap: () async {
+                                          final XFile? p =
+                                              await _picker.pickImage(
+                                                  source: ImageSource.camera,
+                                                  imageQuality: 75);
+                                          Navigator.pop(context, p);
+                                        },
+                                        child: Column(
+                                          children: [
+                                            Icon(
+                                              Icons.photo_camera,
+                                              size: 40,
+                                            ),
+                                            Text("from camera")
+                                          ],
+                                        )),
+                                    InkWell(
+                                        onTap: () async {
+                                          final XFile? p =
+                                              await _picker.pickImage(
+                                                  source: ImageSource.gallery,
+                                                  imageQuality: 75);
+                                          Navigator.pop(context, p);
+                                        },
+                                        child: Column(
+                                          children: [
+                                            Icon(
+                                              Icons.photo,
+                                              size: 40,
+                                            ),
+                                            Text("from gallery")
+                                          ],
+                                        )),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 30,
+                                ),
+                              ],
+                            );
+                          });
+
                       if (photo != null) {
                         StorageRepo().uploadImage(photo).then((value) {
                           setState(() {
@@ -366,8 +421,7 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
             TextField(
               focusNode: descNode,
               onSubmitted: (value) => _pageController.nextPage(
-                  duration: Duration(milliseconds: 300),
-                  curve: Curves.easeIn),
+                  duration: Duration(milliseconds: 300), curve: Curves.easeIn),
               autofocus: true,
               onChanged: (value) {
                 if (value.isNotEmpty && pages.length == 2) {
@@ -418,13 +472,11 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
                 }
               },
               onSubmitted: (value) {
-                
                 _pageController.nextPage(
-                  duration: Duration(milliseconds: 300),
-                  curve: Curves.easeIn);
-                  FocusScope.of(context).requestFocus(descNode);
-
-              } ,
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeIn);
+                FocusScope.of(context).requestFocus(descNode);
+              },
               controller: titleController,
               decoration: InputDecoration(
                 hintText: "Title*",
