@@ -1,11 +1,8 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:confetti/confetti.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ideabarrel/misc/enums.dart';
-import 'package:ideabarrel/misc/global_keys.dart';
 import 'package:ideabarrel/repos/storage_repo.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:page_view_indicators/step_page_indicator.dart';
@@ -101,7 +98,7 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
         child: Column(
           children: [
                 ShowUpAnimation(
-                  delayStart: Duration(milliseconds: 0),
+                  delayStart: const Duration(milliseconds: 0),
                   animationDuration: const Duration(milliseconds: 600),
                   curve: Curves.easeIn,
                   direction: Direction.horizontal,
@@ -117,7 +114,7 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
                     direction: Direction.horizontal,
                     offset: -0.2,
                     child: Padding(
-                        padding: EdgeInsets.only(top: 50),
+                        padding: const EdgeInsets.only(top: 50),
                         child: pages[i].children[ii]));
               })),
         ),
@@ -159,7 +156,7 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
         body: Stack(
           children: [
             PageView(
-                physics: BouncingScrollPhysics(
+                physics: const BouncingScrollPhysics(
                     parent: AlwaysScrollableScrollPhysics()),
                 onPageChanged: (int index) {
                   setState(() {
@@ -175,16 +172,16 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
                     ? IconButton(
                         onPressed: () {
                           _pageController.nextPage(
-                              duration: Duration(milliseconds: 300),
+                              duration: const Duration(milliseconds: 300),
                               curve: Curves.easeIn);
                         },
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.arrow_forward_ios_rounded,
                           color: Colors.white,
                           size: 30,
                         ),
                       )
-                    : SizedBox()),
+                    : const SizedBox()),
             Positioned(
                 top: MediaQuery.of(context).size.height / 2,
                 left: 0,
@@ -192,16 +189,16 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
                     ? IconButton(
                         onPressed: () {
                           _pageController.previousPage(
-                              duration: Duration(milliseconds: 300),
+                              duration: const Duration(milliseconds: 300),
                               curve: Curves.easeIn);
                         },
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.arrow_back_ios_rounded,
                           color: Colors.white,
                           size: 30,
                         ),
                       )
-                    : SizedBox())
+                    : const SizedBox())
           ],
         ));
   }
@@ -240,9 +237,9 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
                           context: context,
                           builder: (context) {
                             return SimpleDialog(
-                              title: Text("Add photo"),
+                              title: const Text("Add photo"),
                               children: [
-                                SizedBox(
+                                const SizedBox(
                                   height: 30,
                                 ),
                                 Row(
@@ -258,7 +255,7 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
                                           Navigator.pop(context, p);
                                         },
                                         child: Column(
-                                          children: [
+                                          children: const [
                                             Icon(
                                               Icons.photo_camera,
                                               size: 40,
@@ -275,7 +272,7 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
                                           Navigator.pop(context, p);
                                         },
                                         child: Column(
-                                          children: [
+                                          children: const [
                                             Icon(
                                               Icons.photo,
                                               size: 40,
@@ -285,7 +282,7 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
                                         )),
                                   ],
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 30,
                                 ),
                               ],
@@ -300,7 +297,7 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
                         });
                       }
                     },
-                    child: Card(
+                    child: const Card(
                       elevation: 10,
                       child: Padding(
                           padding: EdgeInsets.all(40),
@@ -380,12 +377,12 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
               return Column(
                   children: List.generate(Department.values.length, (i) {
                 return Padding(
-                    padding: EdgeInsets.only(top: 40),
+                    padding: const EdgeInsets.only(top: 40),
                     child: CheckboxListTile(
                       tileColor: Colors.white,
                       title: Text(
                         Department.values[i].name,
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                       ),
                       subtitle: Text(
                         Department.values[i].description,
@@ -421,7 +418,8 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
             TextField(
               focusNode: descNode,
               onSubmitted: (value) => _pageController.nextPage(
-                  duration: Duration(milliseconds: 300), curve: Curves.easeIn),
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeIn),
               autofocus: true,
               onChanged: (value) {
                 if (value.isNotEmpty && pages.length == 2) {
@@ -473,7 +471,7 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
               },
               onSubmitted: (value) {
                 _pageController.nextPage(
-                    duration: Duration(milliseconds: 300),
+                    duration: const Duration(milliseconds: 300),
                     curve: Curves.easeIn);
                 FocusScope.of(context).requestFocus(descNode);
               },

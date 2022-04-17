@@ -2,10 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ideabarrel/repos/cosmos_repo.dart';
 import 'package:ideabarrel/ui/screens/idea_details_screen.dart';
+import 'package:page_view_indicators/circle_page_indicator.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 
 class SwipeScreen extends StatefulWidget {
-  SwipeScreen({Key? key}) : super(key: key);
+  const SwipeScreen({Key? key}) : super(key: key);
 
   @override
   State<SwipeScreen> createState() => _SwipeScreenState();
@@ -17,10 +18,12 @@ class _SwipeScreenState extends State<SwipeScreen> {
   MatchEngine? engine;
   List<SwipeItem> ideas = [];
 
+  double cardWidth = 0;
+
   @override
   void initState() {
     CosmosRepo().getAllIdeas().then((value) {
-      WidgetsBinding.instance!.addPostFrameCallback(
+      WidgetsBinding.instance.addPostFrameCallback(
         (timeStamp) {
           if (kDebugMode) print("Ideas fetched: ${value.length}");
           setState(() {
@@ -56,40 +59,167 @@ class _SwipeScreenState extends State<SwipeScreen> {
                     },
                     fillSpace: true,
                     itemBuilder: (context, index) {
+                        final PageController _pc = PageController();
+  final _currentPageNotifier = ValueNotifier<int>(0);
+                      Widget images =  Hero(tag: "images$index", child: PageView(
+                                    onPageChanged: (int index) {
+                                      _currentPageNotifier.value = index;
+                                    },
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    controller: _pc,
+                                    children: List.generate(
+                                        ideas[index].content['imgs'].length,
+                                        (i) {
+                                      return Image(
+                                          fit: BoxFit.cover,
+                                          image: NetworkImage(
+                                              ideas[index].content['imgs'][i]));
+                                    }),
+                                  ));
                       Widget child = Material(
                           child: Container(
-                        padding: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(0),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                         ),
                         // height: MediaQuery.of(context).size.height * 0.6,
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisSize: MainAxisSize.max,
                           children: [
-                            ClipRRect(
-                                borderRadius: BorderRadius.circular(16),
-                                child: Image(
-                                    image: NetworkImage(
-                                        ideas[index].content['imgs'][0]))),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              ideas[index].content["title"],
-                              style: const TextStyle(
-                                  fontSize: 26, fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.start,
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              ideas[index].content["desc"],
-                              style: const TextStyle(
-                                fontSize: 18,
+                            Expanded(
+                              child: Stack(
+                                alignment: Alignment.bottomLeft,
+                                fit: StackFit.loose,
+                                children: [
+                                  images,
+                                  Positioned(
+                                      bottom: 0,
+                                      child: Container(
+                                        decoration: const BoxDecoration(
+                                            gradient: LinearGradient(
+                                                colors: [
+                                              Colors.black,
+                                              Colors.transparent
+                                            ],
+                                                begin: Alignment.bottomCenter,
+                                                end: Alignment.topCenter)),
+                                        height: 400,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        alignment: Alignment.bottomCenter,
+                                      )),
+                                  LayoutBuilder(
+                                      builder: ((context, constraints) {
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback(
+                                      (timeStamp) {
+                                        cardWidth = constraints.maxWidth;
+                                      },
+                                    );
+                                    return Container(
+                                      width: constraints.maxWidth,
+                                      padding: const EdgeInsets.only(
+                                          left: 15, right: 10, bottom: 100),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            ideas[index].content["title"],
+                                            style: const TextStyle(
+                                                fontSize: 24,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white),
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          Text(
+                                            ideas[index].content["desc"],
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18,
+                                            ),
+                                            maxLines: 8,
+                                            overflow: TextOverflow.ellipsis,
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  })),
+                                  Positioned(
+                                      top: 0,
+                                      right: 0,
+                                      width: cardWidth,
+                                      child: Container(
+                                        decoration: const BoxDecoration(
+                                            gradient: LinearGradient(
+                                                stops: [
+                                              0.1,
+                                              1.0
+                                            ],
+                                                colors: [
+                                              Color.fromARGB(71, 0, 0, 0),
+                                              Colors.transparent
+                                            ],
+                                                begin: Alignment.topCenter,
+                                                end: Alignment.bottomCenter)),
+                                        width: 100,
+                                        height: 50,
+                                        child: Align(
+                                          alignment: Alignment.topCenter,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(16.0),
+                                            child: CirclePageIndicator(
+                                              selectedDotColor: Colors.white,
+                                              dotColor: Colors.grey,
+                                              itemCount: ideas[index]
+                                                  .content['imgs']
+                                                  .length,
+                                              currentPageNotifier:
+                                                  _currentPageNotifier,
+                                            ),
+                                          ),
+                                        ),
+                                      )),
+                                  Positioned(
+                                    right: 0,
+                                    bottom: 330,
+                                    child: SizedBox(
+                                      height: 400,
+                                      width: 150,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          _pc.nextPage(
+                                              duration: const Duration(
+                                                  milliseconds: 100),
+                                              curve: Curves.easeIn);
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    left: 0,
+                                    bottom: 330,
+                                    child: SizedBox(
+                                      height: 400,
+                                      width: 150,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          _pc.previousPage(
+                                              duration: const Duration(
+                                                  milliseconds: 100),
+                                              curve: Curves.easeIn);
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 8,
                             )
                           ],
                         ),
@@ -98,15 +228,14 @@ class _SwipeScreenState extends State<SwipeScreen> {
                           onTap: () =>
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (c) => IdeaDetailsScreen(
-                                        index: index,
-                                        child: child,
-                                      ))),
+                                    pageView: images,
+                                    pageViewTag: "images$index"))),
                           child: Card(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20)),
                             elevation: 16,
                             margin: const EdgeInsets.all(20),
-                            child: Hero(tag: index, child: child),
+                            child: child,
                           ));
                     },
                     matchEngine: engine!,
@@ -125,20 +254,22 @@ class _SwipeScreenState extends State<SwipeScreen> {
                       ),
                     ))
                 : Positioned(
-                    bottom: 25,
+                    bottom: 30,
                     right: 70,
-                    child: ElevatedButton(
+                    child: OutlinedButton(
                       child: const Icon(
                         Icons.thumb_up,
                         color: Colors.green,
-                        size: 50,
+                        size: 40,
                       ),
                       onPressed: () {
                         engine?.currentItem?.like();
                       },
-                      style: ElevatedButton.styleFrom(
+                      style: OutlinedButton.styleFrom(
                           shape: const CircleBorder(),
-                          padding: const EdgeInsets.all(10),
+                          side:
+                              const BorderSide(width: 2.5, color: Colors.green),
+                          padding: const EdgeInsets.all(15),
                           primary: Colors.white),
                     ),
                   )),
@@ -162,20 +293,21 @@ class _SwipeScreenState extends State<SwipeScreen> {
                         ]),
                   )
                 : Positioned(
-                    bottom: 25,
+                    bottom: 30,
                     left: 70,
-                    child: ElevatedButton(
+                    child: OutlinedButton(
                       child: const Icon(
                         Icons.thumb_down,
                         color: Colors.red,
-                        size: 50,
+                        size: 40,
                       ),
                       onPressed: () {
                         engine?.currentItem?.nope();
                       },
-                      style: ElevatedButton.styleFrom(
+                      style: OutlinedButton.styleFrom(
                           shape: const CircleBorder(),
-                          padding: const EdgeInsets.all(10),
+                          side: const BorderSide(width: 2.5, color: Colors.red),
+                          padding: const EdgeInsets.all(15),
                           primary: Colors.white),
                     ),
                   )),
