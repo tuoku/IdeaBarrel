@@ -17,8 +17,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
   var stackFinished = false;
   MatchEngine? engine;
   List<SwipeItem> ideas = [];
-  final PageController _pc = PageController();
-  final _currentPageNotifier = ValueNotifier<int>(0);
+
   double cardWidth = 0;
 
   @override
@@ -60,6 +59,24 @@ class _SwipeScreenState extends State<SwipeScreen> {
                     },
                     fillSpace: true,
                     itemBuilder: (context, index) {
+                        final PageController _pc = PageController();
+  final _currentPageNotifier = ValueNotifier<int>(0);
+                      Widget images =  Hero(tag: "images$index", child: PageView(
+                                    onPageChanged: (int index) {
+                                      _currentPageNotifier.value = index;
+                                    },
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    controller: _pc,
+                                    children: List.generate(
+                                        ideas[index].content['imgs'].length,
+                                        (i) {
+                                      return Image(
+                                          fit: BoxFit.cover,
+                                          image: NetworkImage(
+                                              ideas[index].content['imgs'][i]));
+                                    }),
+                                  ));
                       Widget child = Material(
                           child: Container(
                         padding: const EdgeInsets.all(0),
@@ -76,22 +93,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                 alignment: Alignment.bottomLeft,
                                 fit: StackFit.loose,
                                 children: [
-                                  PageView(
-                                    onPageChanged: (int index) {
-                                      _currentPageNotifier.value = index;
-                                    },
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    controller: _pc,
-                                    children: List.generate(
-                                        ideas[index].content['imgs'].length,
-                                        (i) {
-                                      return Image(
-                                          fit: BoxFit.cover,
-                                          image: NetworkImage(
-                                              ideas[index].content['imgs'][i]));
-                                    }),
-                                  ),
+                                  images,
                                   Positioned(
                                       bottom: 0,
                                       child: Container(
@@ -226,15 +228,14 @@ class _SwipeScreenState extends State<SwipeScreen> {
                           onTap: () =>
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (c) => IdeaDetailsScreen(
-                                        index: index,
-                                        child: child,
-                                      ))),
+                                    pageView: images,
+                                    pageViewTag: "images$index"))),
                           child: Card(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20)),
                             elevation: 16,
                             margin: const EdgeInsets.all(20),
-                            child: Hero(tag: index, child: child),
+                            child: child,
                           ));
                     },
                     matchEngine: engine!,

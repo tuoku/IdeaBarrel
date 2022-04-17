@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class IdeaDetailsScreen extends StatefulWidget {
-  const IdeaDetailsScreen({Key? key, required this.child, required this.index})
+  const IdeaDetailsScreen({Key? key, required this.pageView, required this.pageViewTag})
       : super(key: key);
 
-  final int index;
-  final Widget child;
+  final String pageViewTag;
+  final Widget pageView;
   @override
   State<IdeaDetailsScreen> createState() => _IdeaDetailsScreenState();
 }
@@ -15,10 +15,8 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
   Widget build(BuildContext context) {
     return Material(
         child: ListView(children: [
-      Hero(
-        tag: widget.index,
-        child: widget.child,
-      ),
+          Container(height: 500,child:widget.pageView ,)
+      ,
       const Text(
         "  Comments",
         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
