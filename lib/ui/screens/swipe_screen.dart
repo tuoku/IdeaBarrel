@@ -243,8 +243,10 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20)),
                                 elevation: 16,
-                                margin: const EdgeInsets.all(20),
-                                child: child,
+                                margin: const EdgeInsets.all(15),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: child,)
                               ));
                         },
                       );
