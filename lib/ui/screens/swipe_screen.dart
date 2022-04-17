@@ -58,38 +58,68 @@ class _SwipeScreenState extends State<SwipeScreen> {
                     itemBuilder: (context, index) {
                       Widget child = Material(
                           child: Container(
-                        padding: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(0),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                         ),
                         // height: MediaQuery.of(context).size.height * 0.6,
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisSize: MainAxisSize.max,
                           children: [
-                            ClipRRect(
-                                borderRadius: BorderRadius.circular(16),
-                                child: Image(
-                                    image: NetworkImage(
-                                        ideas[index].content['imgs'][0]))),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              ideas[index].content["title"],
-                              style: const TextStyle(
-                                  fontSize: 26, fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.start,
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              ideas[index].content["desc"],
-                              style: const TextStyle(
-                                fontSize: 18,
+                            Expanded(
+                              child: Stack(
+                                alignment: Alignment.bottomLeft,
+                                fit: StackFit.expand,
+                                children: [
+                                  Image(
+                                      fit: BoxFit.cover,
+                                      image: NetworkImage(
+                                          ideas[index].content['imgs'][0])),
+                                  Positioned(
+                                      bottom: 0,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                                colors: [
+                                              Colors.black,
+                                              Colors.transparent
+                                            ],
+                                                begin: Alignment.bottomCenter,
+                                                end: Alignment.topCenter)),
+                                        height: 400,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        alignment: Alignment.bottomCenter,
+                                      )),
+                                      LayoutBuilder(
+                                        
+                                        builder: ((context, constraints) {
+                                       return Container(
+                                          width: constraints.maxWidth,
+                                          padding: EdgeInsets.only(left:15,right: 10, bottom: 100),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(ideas[index].content["title"], style: TextStyle(
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white
+                                          ),),
+                                          SizedBox(height: 10,),
+                                          Text(ideas[index].content["desc"],style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                            
+                                          ),
+                                          maxLines: 8, overflow: TextOverflow.ellipsis,)
+                                        ],
+                                      ),);
+                                      }))
+                                      
+                                ],
                               ),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 8,
                             )
                           ],
                         ),
@@ -125,20 +155,21 @@ class _SwipeScreenState extends State<SwipeScreen> {
                       ),
                     ))
                 : Positioned(
-                    bottom: 25,
+                    bottom: 30,
                     right: 70,
-                    child: ElevatedButton(
+                    child: OutlinedButton(
                       child: const Icon(
                         Icons.thumb_up,
                         color: Colors.green,
-                        size: 50,
+                        size: 40,
                       ),
                       onPressed: () {
                         engine?.currentItem?.like();
                       },
-                      style: ElevatedButton.styleFrom(
+                      style: OutlinedButton.styleFrom(
                           shape: const CircleBorder(),
-                          padding: const EdgeInsets.all(10),
+                          side: BorderSide(width: 2.5, color: Colors.green),
+                          padding: const EdgeInsets.all(15),
                           primary: Colors.white),
                     ),
                   )),
@@ -162,20 +193,21 @@ class _SwipeScreenState extends State<SwipeScreen> {
                         ]),
                   )
                 : Positioned(
-                    bottom: 25,
+                    bottom: 30,
                     left: 70,
-                    child: ElevatedButton(
+                    child: OutlinedButton(
                       child: const Icon(
                         Icons.thumb_down,
                         color: Colors.red,
-                        size: 50,
+                        size: 40,
                       ),
                       onPressed: () {
                         engine?.currentItem?.nope();
                       },
-                      style: ElevatedButton.styleFrom(
+                      style: OutlinedButton.styleFrom(
                           shape: const CircleBorder(),
-                          padding: const EdgeInsets.all(10),
+                          side: BorderSide(width: 2.5, color: Colors.red),
+                          padding: const EdgeInsets.all(15),
                           primary: Colors.white),
                     ),
                   )),
