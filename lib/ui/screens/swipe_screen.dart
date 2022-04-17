@@ -6,7 +6,7 @@ import 'package:page_view_indicators/circle_page_indicator.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 
 class SwipeScreen extends StatefulWidget {
-  SwipeScreen({Key? key}) : super(key: key);
+  const SwipeScreen({Key? key}) : super(key: key);
 
   @override
   State<SwipeScreen> createState() => _SwipeScreenState();
@@ -17,7 +17,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
   var stackFinished = false;
   MatchEngine? engine;
   List<SwipeItem> ideas = [];
-  PageController _pc = PageController();
+  final PageController _pc = PageController();
   final _currentPageNotifier = ValueNotifier<int>(0);
   double cardWidth = 0;
 
@@ -80,7 +80,8 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                     onPageChanged: (int index) {
                                       _currentPageNotifier.value = index;
                                     },
-                                    physics: NeverScrollableScrollPhysics(),
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
                                     controller: _pc,
                                     children: List.generate(
                                         ideas[index].content['imgs'].length,
@@ -94,7 +95,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                   Positioned(
                                       bottom: 0,
                                       child: Container(
-                                        decoration: BoxDecoration(
+                                        decoration: const BoxDecoration(
                                             gradient: LinearGradient(
                                                 colors: [
                                               Colors.black,
@@ -109,12 +110,15 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                       )),
                                   LayoutBuilder(
                                       builder: ((context, constraints) {
-                                        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                          cardWidth = constraints.maxWidth;
-                                        },);
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback(
+                                      (timeStamp) {
+                                        cardWidth = constraints.maxWidth;
+                                      },
+                                    );
                                     return Container(
                                       width: constraints.maxWidth,
-                                      padding: EdgeInsets.only(
+                                      padding: const EdgeInsets.only(
                                           left: 15, right: 10, bottom: 100),
                                       child: Column(
                                         mainAxisAlignment:
@@ -124,17 +128,17 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                         children: [
                                           Text(
                                             ideas[index].content["title"],
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                                 fontSize: 24,
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.white),
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             height: 10,
                                           ),
                                           Text(
                                             ideas[index].content["desc"],
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 18,
                                             ),
@@ -146,55 +150,51 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                     );
                                   })),
                                   Positioned(
-                                    top: 0,
-                                    right: 0,
-                                    width: cardWidth,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          stops: [
-                                            0.1,
-                                            1.0
-                                          ],
-
-                                          colors: [
-                                            Color.fromARGB(71, 0, 0, 0),
-                                            Colors.transparent
-                                          ],
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.bottomCenter
-                                        )
-                                      ),
-                                      width: 100,
-                                      height: 50,
-                                      child: Align(
-                                        alignment: Alignment.topCenter,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(16.0),
-                                          child: CirclePageIndicator(
-                                            selectedDotColor: Colors.white,
-                                            dotColor: Colors.grey,
-                                            itemCount: ideas[index]
-                                                .content['imgs']
-                                                .length,
-                                            currentPageNotifier:
-                                                _currentPageNotifier,
+                                      top: 0,
+                                      right: 0,
+                                      width: cardWidth,
+                                      child: Container(
+                                        decoration: const BoxDecoration(
+                                            gradient: LinearGradient(
+                                                stops: [
+                                              0.1,
+                                              1.0
+                                            ],
+                                                colors: [
+                                              Color.fromARGB(71, 0, 0, 0),
+                                              Colors.transparent
+                                            ],
+                                                begin: Alignment.topCenter,
+                                                end: Alignment.bottomCenter)),
+                                        width: 100,
+                                        height: 50,
+                                        child: Align(
+                                          alignment: Alignment.topCenter,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(16.0),
+                                            child: CirclePageIndicator(
+                                              selectedDotColor: Colors.white,
+                                              dotColor: Colors.grey,
+                                              itemCount: ideas[index]
+                                                  .content['imgs']
+                                                  .length,
+                                              currentPageNotifier:
+                                                  _currentPageNotifier,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    )
-                                  ),
+                                      )),
                                   Positioned(
                                     right: 0,
                                     bottom: 330,
-                                    child: Container(
+                                    child: SizedBox(
                                       height: 400,
                                       width: 150,
                                       child: GestureDetector(
                                         onTap: () {
                                           _pc.nextPage(
-                                              duration:
-                                                  Duration(milliseconds: 100),
+                                              duration: const Duration(
+                                                  milliseconds: 100),
                                               curve: Curves.easeIn);
                                         },
                                       ),
@@ -203,14 +203,14 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                   Positioned(
                                     left: 0,
                                     bottom: 330,
-                                    child: Container(
+                                    child: SizedBox(
                                       height: 400,
                                       width: 150,
                                       child: GestureDetector(
                                         onTap: () {
                                           _pc.previousPage(
-                                              duration:
-                                                  Duration(milliseconds: 100),
+                                              duration: const Duration(
+                                                  milliseconds: 100),
                                               curve: Curves.easeIn);
                                         },
                                       ),
@@ -266,7 +266,8 @@ class _SwipeScreenState extends State<SwipeScreen> {
                       },
                       style: OutlinedButton.styleFrom(
                           shape: const CircleBorder(),
-                          side: BorderSide(width: 2.5, color: Colors.green),
+                          side:
+                              const BorderSide(width: 2.5, color: Colors.green),
                           padding: const EdgeInsets.all(15),
                           primary: Colors.white),
                     ),
@@ -304,7 +305,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                       },
                       style: OutlinedButton.styleFrom(
                           shape: const CircleBorder(),
-                          side: BorderSide(width: 2.5, color: Colors.red),
+                          side: const BorderSide(width: 2.5, color: Colors.red),
                           padding: const EdgeInsets.all(15),
                           primary: Colors.white),
                     ),

@@ -38,7 +38,7 @@ class Root extends StatefulWidget {
 
 class _RootState extends State<Root> with RouteAware {
   var currentPage = 0;
-  Widget body = SwipeScreen();
+  Widget body = const SwipeScreen();
   final GlobalKey _fabKey = GlobalKey();
   bool _fabVisible = true;
 
@@ -88,7 +88,7 @@ class _RootState extends State<Root> with RouteAware {
                       onPressed: () {
                         setState(() {
                           currentPage = 0;
-                          body = SwipeScreen();
+                          body = const SwipeScreen();
                         });
                       },
                       child: Icon(

@@ -44,7 +44,8 @@ class CosmosRepo {
           imgs: List.generate(maps[i]['imgs'].length, (iii) {
             return maps[i]['imgs'][iii].toString();
           }),
-          department: Department.values.firstWhere((e) => e.toString() == maps[i]['department']),
+          department: Department.values
+              .firstWhere((e) => e.toString() == maps[i]['department']),
           submitterUID: maps[i]['submitterUID']);
     });
   }

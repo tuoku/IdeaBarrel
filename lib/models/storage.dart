@@ -4,8 +4,6 @@ import 'package:azblob/azblob.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mime/mime.dart';
-import 'package:flutter/material.dart';
 
 class Storage {
   final storage = AzureStorage.parse(dotenv.env['STORAGE_CONSTR']!);
@@ -24,7 +22,7 @@ class Storage {
           contentType: contentType,
           type: BlobType.BlockBlob);
 
-      return("https://innobarrel.blob.core.windows.net/img/$fileName");
+      return ("https://innobarrel.blob.core.windows.net/img/$fileName");
     } on AzureStorageException catch (ex) {
       if (kDebugMode) print(ex.message);
     } catch (err) {
