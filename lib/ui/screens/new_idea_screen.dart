@@ -341,6 +341,7 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
 
                     await CosmosRepo()
                         .postIdea(Idea(
+                            id: "", // will be replaced by CosmosRepo
                             comments: [],
                             description: descController.text,
                             imgs: imgs.keys.toList(),

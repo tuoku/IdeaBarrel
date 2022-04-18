@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ideabarrel/repos/cosmos_repo.dart';
+import 'package:ideabarrel/repos/functions_repo.dart';
 import 'package:ideabarrel/ui/screens/idea_details_screen.dart';
 import 'package:page_view_indicators/circle_page_indicator.dart';
 import 'package:swipe_cards/swipe_cards.dart';
@@ -32,7 +33,10 @@ class _SwipeScreenState extends State<SwipeScreen> {
                 "title": value[i].title,
                 "desc": value[i].description,
                 "imgs": value[i].imgs
-              });
+              },
+              likeAction: () => FunctionsRepo().voteIdea(true, value[i].id),
+              nopeAction: () => FunctionsRepo().voteIdea(false, value[i].id),
+              );
             });
             engine = MatchEngine(swipeItems: ideas);
           });
@@ -53,6 +57,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
             engine != null
                 ? SwipeCards(
                     onStackFinished: () {
+                      
                       setState(() {
                         stackFinished = true;
                       });

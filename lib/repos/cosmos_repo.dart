@@ -28,6 +28,7 @@ class CosmosRepo {
     List<dynamic> maps = res["Documents"];
     return List.generate(maps.length, (i) {
       return Idea(
+          id: maps[i]['id'],
           title: maps[i]['title'],
           description: maps[i]['description'],
           submittedAt:
