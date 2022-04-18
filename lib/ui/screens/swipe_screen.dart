@@ -266,6 +266,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                           descTag: "desc$index",
                                           descString: ideas[index].content['desc'],
                                           ideaID: ideaModels[index].id,
+                                          comments: ideaModels[index].comments,
                                           )
                                           )),
                               child: Card(
