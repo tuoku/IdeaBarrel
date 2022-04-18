@@ -68,9 +68,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                       final _currentPageNotifier = ValueNotifier<int>(0);
                       return StatefulBuilder(
                         builder: (context, setState) {
-                          Widget images = Hero(
-                              tag: "images$index",
-                              child: PageView(
+                          Widget images = PageView(
                                 onPageChanged: (int index) {
                                   setState(() {
                                     _currentPageNotifier.value = index;
@@ -85,7 +83,31 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                       image: NetworkImage(
                                           ideas[index].content['imgs'][i]));
                                 }),
-                              ));
+                              );
+
+                              Widget title = Material(
+                                type: MaterialType.transparency,
+                                child: Text(
+                                                ideas[index].content["title"],
+                                                style: const TextStyle(
+                                                    fontSize: 24,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white)),
+                                              
+                              );
+
+                              Widget desc = Material(
+                                type: MaterialType.transparency,
+                                child: Text(
+                                                ideas[index].content["desc"],
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 18,
+                                                ),
+                                                maxLines: 8,
+                                                overflow: TextOverflow.ellipsis,
+                                              ));
+
                           Widget child = Material(
                               child: Container(
                             padding: const EdgeInsets.all(0),
@@ -102,7 +124,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                     alignment: Alignment.bottomLeft,
                                     fit: StackFit.loose,
                                     children: [
-                                      images,
+                                      Hero(child: images, tag: "images$index"),
                                       Positioned(
                                           bottom: 0,
                                           child: Container(
@@ -139,25 +161,11 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Text(
-                                                ideas[index].content["title"],
-                                                style: const TextStyle(
-                                                    fontSize: 24,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white),
-                                              ),
+                                            Hero(child: title, tag: "title$index"),
                                               const SizedBox(
                                                 height: 10,
                                               ),
-                                              Text(
-                                                ideas[index].content["desc"],
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 18,
-                                                ),
-                                                maxLines: 8,
-                                                overflow: TextOverflow.ellipsis,
-                                              )
+                                              Hero(child: desc, tag: "desc$index",)
                                             ],
                                           ),
                                         );
@@ -243,7 +251,18 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                   MaterialPageRoute(
                                       builder: (c) => IdeaDetailsScreen(
                                           pageView: images,
-                                          pageViewTag: "images$index"))),
+                                          pageViewTag: "images$index",
+                                          title: title,
+                                          titleTag: "title$index",
+                                          initialIndex: _currentPageNotifier.value,
+                                          urls: ideas[index].content['imgs'], 
+                                          pageController: _pc,
+                                          pageNotifier: _currentPageNotifier,
+                                          titleString: ideas[index].content['title'],
+                                          descTag: "desc$index",
+                                          descString: ideas[index].content['desc'],
+                                          )
+                                          )),
                               child: Card(
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20)),
