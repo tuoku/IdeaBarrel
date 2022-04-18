@@ -2,6 +2,7 @@ import 'package:ideabarrel/misc/enums.dart';
 import 'package:ideabarrel/models/comment.dart';
 
 class Idea {
+  String id;
   String title;
   String description;
   List<String> imgs;
@@ -12,7 +13,9 @@ class Idea {
   Department? department;
 
   Idea(
-      {required this.comments,
+      {
+      required this.id,
+      required this.comments,
       required this.description,
       required this.imgs,
       required this.score,
