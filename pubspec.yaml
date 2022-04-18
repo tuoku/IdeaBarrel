@@ -45,6 +45,7 @@ dependencies:
   azblob: ^2.2.1
   image_picker: ^0.8.5
   mime: ^1.0.1
+  overlay_support: ^1.2.1
 
 dev_dependencies:
   flutter_test:

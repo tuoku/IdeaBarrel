@@ -36,6 +36,7 @@ class CosmosRepo {
           score: maps[i]['score'],
           comments: List.generate(maps[i]['comments'].length, (ii) {
             return Comment(
+              id: maps[i]['comments'][ii]['id'],
                 commenterUID: maps[i]['comments'][ii]['commenterUID'],
                 likes: maps[i]['comments'][ii]['likes'],
                 submittedAt: DateTime.fromMillisecondsSinceEpoch(

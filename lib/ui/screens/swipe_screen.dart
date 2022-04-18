@@ -6,6 +6,8 @@ import 'package:ideabarrel/ui/screens/idea_details_screen.dart';
 import 'package:page_view_indicators/circle_page_indicator.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 
+import '../../models/idea.dart';
+
 class SwipeScreen extends StatefulWidget {
   const SwipeScreen({Key? key}) : super(key: key);
 
@@ -18,6 +20,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
   var stackFinished = false;
   MatchEngine? engine;
   List<SwipeItem> ideas = [];
+  List<Idea> ideaModels = [];
 
   double cardWidth = 0;
 
@@ -27,6 +30,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
       WidgetsBinding.instance.addPostFrameCallback(
         (timeStamp) {
           if (kDebugMode) print("Ideas fetched: ${value.length}");
+          ideaModels = value;
           setState(() {
             ideas = List.generate(value.length, (i) {
               return SwipeItem(content: {
@@ -261,6 +265,8 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                           titleString: ideas[index].content['title'],
                                           descTag: "desc$index",
                                           descString: ideas[index].content['desc'],
+                                          ideaID: ideaModels[index].id,
+                                          comments: ideaModels[index].comments,
                                           )
                                           )),
                               child: Card(
