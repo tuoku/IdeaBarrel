@@ -5,6 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:ideabarrel/ui/screens/leaderboard_screen.dart';
 import 'package:ideabarrel/ui/screens/new_idea_screen.dart';
 import 'package:ideabarrel/ui/screens/swipe_screen.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 final routeObserver = RouteObserver<PageRoute>();
 const duration = Duration(milliseconds: 300);
@@ -19,13 +20,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return OverlaySupport.global(child:  MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
           primarySwatch: Colors.blue, unselectedWidgetColor: Colors.white),
       navigatorObservers: [routeObserver],
       home: const Root(),
-    );
+    ));
   }
 }
 
