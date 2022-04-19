@@ -19,8 +19,8 @@ static const _baseUrl = "https://ideabarrel.azurewebsites.net/api";
      return false;
   }
 
-  Future<bool> addComment(String text, String id) async {
-    final url = "$_baseUrl/addComment?id=$id&text=$text";
+  Future<bool> addComment(String text, String id, String uuid) async {
+    final url = "$_baseUrl/addComment?id=$id&uuid=$uuid&text=$text";
     http.Response res = await http.post(Uri.parse(url));
      if (res.statusCode == 200) return true;
      return false;

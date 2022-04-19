@@ -6,7 +6,7 @@ class Idea {
   String title;
   String description;
   List<String> imgs;
-  int submitterUID;
+  String submitterUID;
   int score;
   List<Comment> comments;
   DateTime submittedAt;

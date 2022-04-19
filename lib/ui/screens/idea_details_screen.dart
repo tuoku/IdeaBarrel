@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:ideabarrel/repos/auth_repo.dart';
 import 'package:ideabarrel/repos/functions_repo.dart';
 import 'package:overlay_support/overlay_support.dart';
 
@@ -105,7 +106,7 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                                   return ShaderMask(
                                       shaderCallback: (rect) {
                                         return LinearGradient(
-                                          begin: Alignment.center,
+                                          begin: Alignment.center,    
                                           end: Alignment.bottomCenter,
                                           colors: [
                                             Colors.black,
@@ -123,6 +124,16 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                           tag: widget.pageViewTag)))),
           SliverList(
             delegate: SliverChildListDelegate([
+               Padding(
+                padding: EdgeInsets.only(left: 15, top: 10),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "About",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+                ),
+              ),
               Padding(
                   padding: EdgeInsets.all(15),
                   child: Hero(
@@ -142,6 +153,9 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                   ),
                 ),
               ),
+              comments.isEmpty ?
+                Center(child: Text("No comments yet"),)
+                : SizedBox(),
               ...List.generate(comments.length, ((index) {
                 return Padding(
                     padding: EdgeInsets.all(5),
@@ -152,7 +166,7 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                         ),
                         CircleAvatar(
                           backgroundImage:
-                              NetworkImage("https://i.pravatar.cc/100"),
+                              NetworkImage("https://innobarrel.blob.core.windows.net/img/${comments[index].commenterUID}"),
                         ),
                         SizedBox(
                           width: 10,
@@ -174,11 +188,44 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                               labelText: "Write a comment",
                             ),
                             controller: _commentController,
-                            onSubmitted: (value) {
-                              if (value.isNotEmpty) {
-                                FunctionsRepo()
-                                    .addComment(value, widget.ideaID);
-                              }
+                            onSubmitted: (value) async {
+                              if (_commentController.text.isNotEmpty && !isSending) {
+                          setState(() {
+                            isSending = true;
+                          });
+                          FunctionsRepo()
+                              .addComment(
+                                  _commentController.text, widget.ideaID, await AuthRepo().getUUID() ?? "")
+                              .then((value) {
+                            if (value) {
+                              showSimpleNotification(Text("Comment added!"),
+                                  background: Colors.green,
+                                  slideDismissDirection:
+                                      DismissDirection.horizontal);
+                              setState(() async {
+                                isSending = false;
+
+                                comments.add(Comment(
+                                    commenterUID: await AuthRepo().getUUID() ?? "",
+                                    id: "",
+                                    likes: 0,
+                                    submittedAt: DateTime.now(),
+                                    text: _commentController.text));
+                                _commentController.clear();
+                              });
+                            } else {
+                              showSimpleNotification(
+                                  Text("Something went wrong"),
+                                  subtitle: Text("Comment couldn't be posted"),
+                                  background: Colors.red,
+                                  slideDismissDirection:
+                                      DismissDirection.horizontal);
+                              setState(() {
+                                isSending = false;
+                              });
+                            }
+                          });
+                        }
                             },
                           ))),
                   ElevatedButton(
@@ -188,25 +235,25 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                           primary: _commentController.text.isEmpty
                               ? Colors.grey
                               : Colors.blue),
-                      onPressed: (() {
-                        if (_commentController.text.isNotEmpty) {
+                      onPressed: (() async {
+                        if (_commentController.text.isNotEmpty && !isSending) {
                           setState(() {
                             isSending = true;
                           });
                           FunctionsRepo()
                               .addComment(
-                                  _commentController.text, widget.ideaID)
+                                  _commentController.text, widget.ideaID, await AuthRepo().getUUID() ?? "")
                               .then((value) {
                             if (value) {
                               showSimpleNotification(Text("Comment added!"),
                                   background: Colors.green,
                                   slideDismissDirection:
                                       DismissDirection.horizontal);
-                              setState(() {
+                              setState(() async {
                                 isSending = false;
 
                                 comments.add(Comment(
-                                    commenterUID: 0,
+                                    commenterUID: await AuthRepo().getUUID() ?? "",
                                     id: "",
                                     likes: 0,
                                     submittedAt: DateTime.now(),

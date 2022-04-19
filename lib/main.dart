@@ -2,14 +2,21 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:ideabarrel/repos/auth_repo.dart';
 import 'package:ideabarrel/ui/screens/leaderboard_screen.dart';
 import 'package:ideabarrel/ui/screens/new_idea_screen.dart';
+import 'package:ideabarrel/ui/screens/register_screen.dart';
 import 'package:ideabarrel/ui/screens/swipe_screen.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final routeObserver = RouteObserver<PageRoute>();
 const duration = Duration(milliseconds: 300);
+bool isLogged = false;
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+  isLogged = (prefs.getString('uuid') != null);
   await dotenv.load(fileName: '.env');
   runApp(const MyApp());
 }
@@ -20,12 +27,23 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return OverlaySupport.global(child:  MaterialApp(
+    return OverlaySupport.global(
+        child: MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
           primarySwatch: Colors.blue, unselectedWidgetColor: Colors.white),
       navigatorObservers: [routeObserver],
-      home: const Root(),
+      home: StatefulBuilder(builder: (context, setState) {
+        
+        AuthRepo().loggedInStream.stream.asBroadcastStream().listen((event) {
+          setState(
+            () {
+              isLogged = event;
+            },
+          );
+        });
+        return isLogged ? const Root() : RegisterScreen();
+      }),
     ));
   }
 }
