@@ -107,8 +107,10 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                                 style: const TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 18,
+                                                  height: 1.4
                                                 ),
-                                                maxLines: 8,
+                                                maxLines: 7,
+                                                
                                                 overflow: TextOverflow.ellipsis,
                                               ));
 

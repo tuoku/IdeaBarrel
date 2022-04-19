@@ -1,7 +1,7 @@
 class Comment {
   String id;
   String text;
-  int commenterUID;
+  String commenterUID;
   DateTime submittedAt;
   int likes;
 

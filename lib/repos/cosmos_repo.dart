@@ -80,4 +80,27 @@ class CosmosRepo {
     if (kDebugMode) print(res);
     return true;
   }
+
+  // returns true if success, false if not
+  Future<bool> registerUser(String uuid, String name) async {
+    
+    final Map<String, dynamic> body = {
+      "id": uuid,
+      "name": name,
+      "createdAt": DateTime.now().millisecondsSinceEpoch
+    };
+
+    if (kDebugMode) print(jsonEncode(body));
+
+    Map<String, dynamic> res = await cosmos.queryCosmos(
+        url:
+            'https://ideabarrel.documents.azure.com:443/dbs/Ideas/colls/Users/docs',
+        method: 'POST',
+        body: body,
+        isQuery: false,
+        micros: uuid);
+
+    if (kDebugMode) print(res);
+    return true;
+  }
 }

@@ -9,9 +9,9 @@ class Storage {
   final storage = AzureStorage.parse(dotenv.env['STORAGE_CONSTR']!);
 
   // uploads image and returns the resulting URL of the image or null if unsuccesful
-  Future<String?> uploadImage(XFile image) async {
+  Future<String?> uploadImage(XFile image, [String? name]) async {
     try {
-      String fileName = image.name;
+      String fileName = name ?? image.name;
       // read file as Uint8List
       Uint8List content = await image.readAsBytes();
       String container = "img";

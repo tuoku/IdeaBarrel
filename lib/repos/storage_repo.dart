@@ -13,8 +13,8 @@ class StorageRepo {
 
   final storage = Storage();
 
-  Future<String?> uploadImage(XFile image) async {
-    final res = await storage.uploadImage(image);
+  Future<String?> uploadImage(XFile image, [String? name]) async {
+    final res = await storage.uploadImage(image, name);
     return res;
   }
 }

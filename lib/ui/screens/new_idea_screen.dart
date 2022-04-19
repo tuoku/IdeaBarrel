@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:ideabarrel/misc/enums.dart';
+import 'package:ideabarrel/repos/auth_repo.dart';
 import 'package:ideabarrel/repos/storage_repo.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:page_view_indicators/step_page_indicator.dart';
@@ -347,7 +348,7 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
                             imgs: imgs.keys.toList(),
                             score: 0,
                             submittedAt: DateTime.now(),
-                            submitterUID: 0,
+                            submitterUID: await AuthRepo().getUUID() ?? "",
                             department: checkboxValues.entries
                                 .where((element) => element.value == true)
                                 .first
