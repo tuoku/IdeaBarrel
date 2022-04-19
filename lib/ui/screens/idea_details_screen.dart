@@ -189,13 +189,14 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                             ),
                             controller: _commentController,
                             onSubmitted: (value) async {
+                              final uid = await AuthRepo().getUUID() ?? "";
                               if (_commentController.text.isNotEmpty && !isSending) {
                           setState(() {
                             isSending = true;
                           });
                           FunctionsRepo()
                               .addComment(
-                                  _commentController.text, widget.ideaID, await AuthRepo().getUUID() ?? "")
+                                  _commentController.text, widget.ideaID, uid)
                               .then((value) {
                             if (value) {
                               showSimpleNotification(Text("Comment added!"),
@@ -206,7 +207,7 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                                 isSending = false;
 
                                 comments.add(Comment(
-                                    commenterUID: await AuthRepo().getUUID() ?? "",
+                                    commenterUID:uid,
                                     id: "",
                                     likes: 0,
                                     submittedAt: DateTime.now(),
@@ -236,24 +237,26 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                               ? Colors.grey
                               : Colors.blue),
                       onPressed: (() async {
+                        final uid  = await AuthRepo().getUUID() ?? "";
                         if (_commentController.text.isNotEmpty && !isSending) {
                           setState(() {
                             isSending = true;
                           });
                           FunctionsRepo()
                               .addComment(
-                                  _commentController.text, widget.ideaID, await AuthRepo().getUUID() ?? "")
+                                  _commentController.text, widget.ideaID, uid)
                               .then((value) {
                             if (value) {
                               showSimpleNotification(Text("Comment added!"),
                                   background: Colors.green,
                                   slideDismissDirection:
                                       DismissDirection.horizontal);
-                              setState(() async {
+                                      
+                              setState(() {
                                 isSending = false;
 
                                 comments.add(Comment(
-                                    commenterUID: await AuthRepo().getUUID() ?? "",
+                                    commenterUID: uid,
                                     id: "",
                                     likes: 0,
                                     submittedAt: DateTime.now(),
