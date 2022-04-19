@@ -8,6 +8,11 @@ class AllIdeasScreen extends StatefulWidget {
 }
 
 class _AllIdeasScreenState extends State<AllIdeasScreen> {
+  var chip1 = false;
+  var chip2 = false;
+  var chip3 = false;
+  var chip4 = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,22 +26,46 @@ class _AllIdeasScreenState extends State<AllIdeasScreen> {
                 Padding(
                   padding: const EdgeInsets.all(5),
                   child: FilterChip(
-                      label: const Text("Approved"), onSelected: (e) {}),
+                    label: const Text("Approved"),
+                    onSelected: (e) {
+                      setState((() => chip1 = e));
+                    },
+                    selected: chip1,
+                    showCheckmark: chip1,
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(5),
                   child: FilterChip(
-                      label: const Text("Trending"), onSelected: (e) {}),
+                    label: const Text("Trending"),
+                    onSelected: (e) {
+                      setState((() => chip2 = e));
+                    },
+                    selected: chip2,
+                    showCheckmark: chip2,
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(5),
-                  child:
-                      FilterChip(label: const Text("HR"), onSelected: (e) {}),
+                  child: FilterChip(
+                    label: const Text("HR"),
+                    onSelected: (e) {
+                      setState((() => chip3 = e));
+                    },
+                    selected: chip3,
+                    showCheckmark: chip3,
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(5),
-                  child:
-                      FilterChip(label: const Text("WR"), onSelected: (e) {}),
+                  child: FilterChip(
+                    label: const Text("WR"),
+                    onSelected: (e) {
+                      setState((() => chip4 = e));
+                    },
+                    selected: chip4,
+                    showCheckmark: chip4,
+                  ),
                 ),
               ],
             ),

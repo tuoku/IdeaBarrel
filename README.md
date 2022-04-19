@@ -1,5 +1,7 @@
 # IdeaBarrel
-Gamified idea management solution developed for internal use at Nokia
+## Gamified idea management solution developed for internal use at Nokia
+![render](https://user-images.githubusercontent.com/70937274/163125729-4a5348f1-5c22-4820-ad58-dc321e487cbc.jpg)
+
 ### Notes for contributors
 Most CI issues can be avoided by running `dart fix --apply` and `flutter format .` before pushing your commits to GitHub.
 If you want to make sure it will pass, run:
