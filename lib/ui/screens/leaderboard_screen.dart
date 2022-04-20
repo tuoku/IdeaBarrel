@@ -32,6 +32,9 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         Map<String, int> tempMap = {};
+        for (var e in users) {
+          tempMap[e.uuid] = 0;
+        }
         for (var idea in mIdeas) {
           tempMap.update(
             idea.submitterUID,
@@ -149,6 +152,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
             child: Row(
           children: [
              CircleAvatar(
+               backgroundColor: Colors.grey[300],
               radius: 25,
               backgroundImage: NetworkImage("https://innobarrel.blob.core.windows.net/img/${userScores.keys.toList()[i]}"),
             ),
