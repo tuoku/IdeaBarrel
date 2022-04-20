@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:ideabarrel/repos/auth_repo.dart';
 import 'package:ideabarrel/repos/cosmos_repo.dart';
@@ -27,6 +29,10 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
             (previousValue, element) {
           return previousValue + element.totalLikes;
         });
+
+        value.sort(
+          (a, b) => a.score.compareTo(b.score),
+        );
 
         setState(() {
           ideas = value;
@@ -264,21 +270,14 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
         const SizedBox(
           height: 10,
         ),
-        const Card(
-            child: ListTile(
-          title: Text("Työnnettävä mikroaaltouuni"),
-          subtitle: Text("442 likes"),
-        )),
-        const Card(
-            child: ListTile(
-          title: Text("Limukone aulaan!!"),
-          subtitle: Text("310 likes"),
-        )),
-        const Card(
-            child: ListTile(
-          title: Text("Lisää parkkipaikkoja"),
-          subtitle: Text("277 likes"),
-        )),
+        ...List.generate(min(3, ideas.length), (index) {
+          // ideas are sorted by score asc
+          return Card(
+              child: ListTile(
+            title: Text(ideas[index].title),
+            subtitle: Text("${ideas[index].totalLikes} likes"),
+          ));
+        }),
       ]),
     );
   }
