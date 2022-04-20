@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:ideabarrel/repos/cosmos_repo.dart';
+
+import '../../models/idea.dart';
 
 class AllIdeasScreen extends StatefulWidget {
   const AllIdeasScreen({Key? key}) : super(key: key);
@@ -12,6 +15,22 @@ class _AllIdeasScreenState extends State<AllIdeasScreen> {
   var chip2 = false;
   var chip3 = false;
   var chip4 = false;
+
+  int sort = 1;
+
+  List<Idea> allIdeas = [];
+
+  @override
+  void initState() {
+    CosmosRepo().getAllIdeas().then((ideas) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        setState(() {
+          allIdeas = ideas;
+        });
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,31 +91,39 @@ class _AllIdeasScreenState extends State<AllIdeasScreen> {
             Row(
               children: [
                 const Text("Sort by:"),
-                DropdownButton(items: const [
-                  DropdownMenuItem(
-                    child: Text("Likes"),
-                    value: 1,
-                  ),
-                  DropdownMenuItem(
-                    child: Text("Comments"),
-                    value: 2,
-                  ),
-                  DropdownMenuItem(
-                    child: Text("% liked"),
-                    value: 3,
-                  ),
-                ], onChanged: (dynamic e) {})
+                DropdownButton(
+                    value: sort,
+                    items: const [
+                      DropdownMenuItem(
+                        child: Text("Likes"),
+                        value: 1,
+                      ),
+                      DropdownMenuItem(
+                        child: Text("Comments"),
+                        value: 2,
+                      ),
+                      DropdownMenuItem(
+                        child: Text("% liked"),
+                        value: 3,
+                      ),
+                    ],
+                    onChanged: (int? e) {
+                      setState(() {
+                        sort = e ?? 1;
+                      });
+                    })
               ],
             ),
             Expanded(
                 child: ListView.builder(
-                    itemCount: 20,
+                    itemCount: allIdeas.length,
                     itemBuilder: ((context, index) {
+                      Idea i = allIdeas[index];
                       return Card(
                         child: ListTile(
-                          title: Text("Idea #$index"),
-                          subtitle:
-                              const Text("140 likes, 87% liked, 3 comments"),
+                          title: Text(i.title),
+                          subtitle: Text(
+                              "${i.totalLikes} likes, ${(i.score / i.totalLikes * 100).toStringAsFixed(0)}% liked, ${i.comments.length} comments"),
                           trailing: SizedBox(
                               width: 50,
                               child: Row(children: const [
