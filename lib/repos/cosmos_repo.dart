@@ -7,6 +7,7 @@ import 'package:ideabarrel/models/comment.dart';
 
 import '../models/cosmos.dart';
 import '../models/idea.dart';
+import '../models/user.dart';
 
 class CosmosRepo {
   // --- singleton boilerplate
@@ -52,6 +53,18 @@ class CosmosRepo {
               .firstWhere((e) => e.toString() == maps[i]['department']),
           submitterUID: maps[i]['submitterUID']);
     });
+  }
+
+  Future<List<User>> getAllUsers() async {
+      Map<String, dynamic> res = await cosmos.queryCosmos(
+        isQuery: true,
+        url:
+            'https://ideabarrel.documents.azure.com:443/dbs/Ideas/colls/Users/docs',
+        method: 'GET');
+        List<dynamic> maps = res["Documents"];
+        return List.generate(maps.length, (i) {
+          return User(name: maps[i]['name'], uuid: maps[i]['id']);
+        });
   }
 
   // returns true if success, false if not

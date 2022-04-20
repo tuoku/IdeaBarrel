@@ -8,6 +8,7 @@ import 'package:ideabarrel/ui/screens/shop_screen.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../models/idea.dart';
+import '../../models/user.dart';
 
 class LeaderboardScreen extends StatefulWidget {
   const LeaderboardScreen({Key? key}) : super(key: key);
@@ -19,24 +20,44 @@ class LeaderboardScreen extends StatefulWidget {
 class _LeaderboardScreenState extends State<LeaderboardScreen> {
   List<Idea> ideas = [];
   int? myScore;
+  Map<String, int> userScores = {};
+  List<User> allUsers = [];
+  int topScore = 0;
 
   @override
   void initState() {
-    CosmosRepo().getAllIdeas().then((value) async {
+    CosmosRepo().getAllIdeas().then((mIdeas) async {
       final uid = await AuthRepo().getUUID() ?? "";
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        final score = value.where((e) => e.submitterUID == uid).fold<int>(0,
-            (previousValue, element) {
-          return previousValue + element.totalLikes;
-        });
+      final users = await CosmosRepo().getAllUsers();
 
-        value.sort(
-          (a, b) => a.score.compareTo(b.score),
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        Map<String, int> tempMap = {};
+        for (var idea in mIdeas) {
+          tempMap.update(
+            idea.submitterUID,
+            (points) => (points + idea.totalLikes).toInt(),
+            ifAbsent: () => idea.totalLikes,
+          );
+        }
+
+
+        final score = tempMap[uid];
+
+        final ls = tempMap.values.toList();
+        ls.sort(((a, b) => b.compareTo(a)));
+        final ts = ls.first;
+
+
+        mIdeas.sort(
+          (a, b) => b.score.compareTo(a.score),
         );
 
         setState(() {
-          ideas = value;
+          ideas = mIdeas;
           myScore = score;
+          userScores = tempMap;
+          allUsers = users;
+          topScore = ts;
         });
       });
     });
@@ -120,11 +141,16 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
         const SizedBox(
           height: 10,
         ),
-        Row(
+
+        ...List.generate(min(3, userScores.length), ((i) {
+          final percentageOfMax = ( userScores.values.toList()[i] / topScore) * 100;
+          return Padding(
+            padding: EdgeInsets.only(top: 7, bottom: 7),
+            child: Row(
           children: [
-            const CircleAvatar(
+             CircleAvatar(
               radius: 25,
-              backgroundImage: AssetImage("assets/ukko1.jpeg"),
+              backgroundImage: NetworkImage("https://innobarrel.blob.core.windows.net/img/${userScores.keys.toList()[i]}"),
             ),
             const SizedBox(
               width: 10,
@@ -132,15 +158,16 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "Matti Meikäläinen",
+                 Text(
+                  allUsers.firstWhere((e) => e.uuid == userScores.keys.toList()[i]).name,
                   style: TextStyle(fontSize: 18),
                 ),
-                Row(
+                
+                 Row(
                   children: [
                     Container(
                       height: 20,
-                      width: 250,
+                      width: max(10, 250 * percentageOfMax / 100),
                       decoration: BoxDecoration(
                           gradient: const LinearGradient(colors: [
                             Color.fromARGB(255, 44, 143, 224),
@@ -151,104 +178,20 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                     const SizedBox(
                       width: 10,
                     ),
-                    const Text(
-                      "4031",
+                    Text(
+                      userScores.values.toList()[i].toString(),
                       style: TextStyle(fontSize: 16),
                     )
                   ],
-                )
-              ],
-            ),
-          ],
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        Row(
-          children: [
-            const CircleAvatar(
-              radius: 25,
-              backgroundImage: AssetImage("assets/ukko2.jpeg"),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Maija Muikkeli",
-                  style: TextStyle(fontSize: 18),
                 ),
-                Row(
-                  children: [
-                    Container(
-                      height: 20,
-                      width: 200,
-                      decoration: BoxDecoration(
-                          gradient: const LinearGradient(colors: [
-                            Color.fromARGB(255, 44, 143, 224),
-                            Color.fromARGB(255, 18, 195, 226)
-                          ]),
-                          borderRadius: BorderRadius.circular(16)),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    const Text(
-                      "3701",
-                      style: TextStyle(fontSize: 16),
-                    )
-                  ],
-                )
+                
+                
               ],
             ),
           ],
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        Row(
-          children: [
-            const CircleAvatar(
-              radius: 25,
-              backgroundImage: AssetImage("assets/ukko3.jpeg"),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Teppo Teikäläinen",
-                  style: TextStyle(fontSize: 18),
-                ),
-                Row(
-                  children: [
-                    Container(
-                      height: 20,
-                      width: 130,
-                      decoration: BoxDecoration(
-                          gradient: const LinearGradient(colors: [
-                            Color.fromARGB(255, 44, 143, 224),
-                            Color.fromARGB(255, 18, 195, 226)
-                          ]),
-                          borderRadius: BorderRadius.circular(16)),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    const Text(
-                      "2800",
-                      style: TextStyle(fontSize: 16),
-                    )
-                  ],
-                )
-              ],
-            ),
-          ],
-        ),
+        ));
+        })),
+        
         const SizedBox(
           height: 25,
         ),
