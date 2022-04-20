@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:ideabarrel/repos/auth_repo.dart';
+import 'package:ideabarrel/repos/cosmos_repo.dart';
 import 'package:ideabarrel/ui/screens/all_ideas_screen.dart';
 import 'package:ideabarrel/ui/screens/shop_screen.dart';
+import 'package:shimmer/shimmer.dart';
+
+import '../../models/idea.dart';
 
 class LeaderboardScreen extends StatefulWidget {
   const LeaderboardScreen({Key? key}) : super(key: key);
@@ -10,6 +15,28 @@ class LeaderboardScreen extends StatefulWidget {
 }
 
 class _LeaderboardScreenState extends State<LeaderboardScreen> {
+  List<Idea> ideas = [];
+  int? myScore;
+
+  @override
+  void initState() {
+    CosmosRepo().getAllIdeas().then((value) async {
+      final uid = await AuthRepo().getUUID() ?? "";
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        final score = value.where((e) => e.submitterUID == uid).fold<int>(0,
+            (previousValue, element) {
+          return previousValue + element.totalLikes;
+        });
+
+        setState(() {
+          ideas = value;
+          myScore = score;
+        });
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -34,19 +61,36 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
+                          children: [
                             Text(
                               "My points:",
                               style:
                                   TextStyle(color: Colors.white, fontSize: 22),
                             ),
-                            Text(
-                              "591",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.bold),
+                            SizedBox(
+                              height: 10,
                             ),
+                            myScore != null
+                                ? Text(
+                                    myScore.toString(),
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 32,
+                                        fontWeight: FontWeight.bold),
+                                  )
+                                : Shimmer.fromColors(
+                                    baseColor:
+                                        Color.fromARGB(255, 202, 201, 201),
+                                    highlightColor: Colors.white,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          color: Color.fromARGB(
+                                              255, 228, 228, 228)),
+                                      height: 40,
+                                      width: 100,
+                                    )),
                           ],
                         ),
                         IconButton(

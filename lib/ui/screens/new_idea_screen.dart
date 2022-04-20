@@ -347,6 +347,8 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
                             description: descController.text,
                             imgs: imgs.keys.toList(),
                             score: 0,
+                            totalDislikes: 0,
+                            totalLikes: 0,
                             submittedAt: DateTime.now(),
                             submitterUID: await AuthRepo().getUUID() ?? "",
                             department: checkboxValues.entries

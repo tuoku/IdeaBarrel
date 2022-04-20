@@ -92,10 +92,7 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                               type: MaterialType.transparency,
                               child: PageView(
                                 onPageChanged: (int index) {
-                                  setState(() {
-                                    widget.pageNotifier.value = index;
-                                    widget.pageController.jumpToPage(index);
-                                  });
+                                  
                                 },
                                 physics: const BouncingScrollPhysics(
                                     parent: AlwaysScrollableScrollPhysics()),

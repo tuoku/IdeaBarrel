@@ -8,6 +8,8 @@ class Idea {
   List<String> imgs;
   String submitterUID;
   int score;
+  int totalLikes;
+  int totalDislikes;
   List<Comment> comments;
   DateTime submittedAt;
   Department? department;
@@ -19,6 +21,8 @@ class Idea {
       required this.description,
       required this.imgs,
       required this.score,
+      required this.totalLikes,
+      required this.totalDislikes,
       required this.submittedAt,
       required this.submitterUID,
       required this.department,
