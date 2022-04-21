@@ -304,9 +304,7 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                           : Icon(Icons.send))
                 ],
               ),
-              SizedBox(
-                height: 500,
-              ),
+              
             ]),
           )
         ]));
