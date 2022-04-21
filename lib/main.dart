@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:ideabarrel/repos/auth_repo.dart';
+import 'package:ideabarrel/repos/database_repo.dart';
 import 'package:ideabarrel/ui/screens/leaderboard_screen.dart';
 import 'package:ideabarrel/ui/screens/new_idea_screen.dart';
 import 'package:ideabarrel/ui/screens/register_screen.dart';
@@ -16,6 +17,7 @@ bool isLogged = false;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
+  await DatabaseRepo().init();
   isLogged = (prefs.getString('uuid') != null);
   await dotenv.load(fileName: '.env');
   runApp(const MyApp());

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ideabarrel/repos/cosmos_repo.dart';
+import 'package:ideabarrel/repos/database_repo.dart';
 import 'package:ideabarrel/repos/functions_repo.dart';
 import 'package:ideabarrel/ui/screens/idea_details_screen.dart';
 import 'package:page_view_indicators/circle_page_indicator.dart';
@@ -26,20 +27,29 @@ class _SwipeScreenState extends State<SwipeScreen> {
 
   @override
   void initState() {
-    CosmosRepo().getAllIdeas().then((value) {
+    CosmosRepo().getAllIdeas().then((value) async {
+      final swiped = await DatabaseRepo().getSwiped();
       WidgetsBinding.instance.addPostFrameCallback(
         (timeStamp) {
           if (kDebugMode) print("Ideas fetched: ${value.length}");
+          value.removeWhere((element) => swiped.keys.contains(element.id));
           ideaModels = value;
           setState(() {
             ideas = List.generate(value.length, (i) {
-              return SwipeItem(content: {
-                "title": value[i].title,
-                "desc": value[i].description,
-                "imgs": value[i].imgs
-              },
-              likeAction: () => FunctionsRepo().voteIdea(true, value[i].id),
-              nopeAction: () => FunctionsRepo().voteIdea(false, value[i].id),
+              return SwipeItem(
+                content: {
+                  "title": value[i].title,
+                  "desc": value[i].description,
+                  "imgs": value[i].imgs
+                },
+                likeAction: () {
+                  FunctionsRepo().voteIdea(true, value[i].id);
+                  DatabaseRepo().insertSwipe(value[i].id, true);
+                },
+                nopeAction: () {
+                  FunctionsRepo().voteIdea(false, value[i].id);
+                  DatabaseRepo().insertSwipe(value[i].id, false);
+                },
               );
             });
             engine = MatchEngine(swipeItems: ideas);
@@ -61,7 +71,6 @@ class _SwipeScreenState extends State<SwipeScreen> {
             engine != null
                 ? SwipeCards(
                     onStackFinished: () {
-                      
                       setState(() {
                         stackFinished = true;
                       });
@@ -73,46 +82,42 @@ class _SwipeScreenState extends State<SwipeScreen> {
                       return StatefulBuilder(
                         builder: (context, setState) {
                           Widget images = PageView(
-                                onPageChanged: (int index) {
-                                  setState(() {
-                                    _currentPageNotifier.value = index;
-                                  });
-                                },
-                                physics: const NeverScrollableScrollPhysics(),
-                                controller: _pc,
-                                children: List.generate(
-                                    ideas[index].content['imgs'].length, (i) {
-                                  return Image(
-                                      fit: BoxFit.cover,
-                                      image: NetworkImage(
-                                          ideas[index].content['imgs'][i]));
-                                }),
-                              );
+                            onPageChanged: (int index) {
+                              setState(() {
+                                _currentPageNotifier.value = index;
+                              });
+                            },
+                            physics: const NeverScrollableScrollPhysics(),
+                            controller: _pc,
+                            children: List.generate(
+                                ideas[index].content['imgs'].length, (i) {
+                              return Image(
+                                  fit: BoxFit.cover,
+                                  image: NetworkImage(
+                                      ideas[index].content['imgs'][i]));
+                            }),
+                          );
 
-                              Widget title = Material(
-                                type: MaterialType.transparency,
-                                child: Text(
-                                                ideas[index].content["title"],
-                                                style: const TextStyle(
-                                                    fontSize: 24,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white)),
-                                              
-                              );
+                          Widget title = Material(
+                            type: MaterialType.transparency,
+                            child: Text(ideas[index].content["title"],
+                                style: const TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white)),
+                          );
 
-                              Widget desc = Material(
-                                type: MaterialType.transparency,
-                                child: Text(
-                                                ideas[index].content["desc"],
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 18,
-                                                  height: 1.4
-                                                ),
-                                                maxLines: 7,
-                                                
-                                                overflow: TextOverflow.ellipsis,
-                                              ));
+                          Widget desc = Material(
+                              type: MaterialType.transparency,
+                              child: Text(
+                                ideas[index].content["desc"],
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    height: 1.4),
+                                maxLines: 7,
+                                overflow: TextOverflow.ellipsis,
+                              ));
 
                           Widget child = Material(
                               child: Container(
@@ -167,11 +172,16 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                            Hero(child: title, tag: "title$index"),
+                                              Hero(
+                                                  child: title,
+                                                  tag: "title$index"),
                                               const SizedBox(
                                                 height: 10,
                                               ),
-                                              Hero(child: desc, tag: "desc$index",)
+                                              Hero(
+                                                child: desc,
+                                                tag: "desc$index",
+                                              )
                                             ],
                                           ),
                                         );
@@ -253,33 +263,36 @@ class _SwipeScreenState extends State<SwipeScreen> {
                             ),
                           ));
                           return GestureDetector(
-                              onTap: () => Navigator.of(context).push(
-                                  MaterialPageRoute(
+                              onTap: () =>
+                                  Navigator.of(context).push(MaterialPageRoute(
                                       builder: (c) => IdeaDetailsScreen(
-                                          pageView: images,
-                                          pageViewTag: "images$index",
-                                          title: title,
-                                          titleTag: "title$index",
-                                          initialIndex: _currentPageNotifier.value,
-                                          urls: ideas[index].content['imgs'], 
-                                          pageController: _pc,
-                                          pageNotifier: _currentPageNotifier,
-                                          titleString: ideas[index].content['title'],
-                                          descTag: "desc$index",
-                                          descString: ideas[index].content['desc'],
-                                          ideaID: ideaModels[index].id,
-                                          comments: ideaModels[index].comments,
-                                          )
-                                          )),
+                                            pageView: images,
+                                            pageViewTag: "images$index",
+                                            title: title,
+                                            titleTag: "title$index",
+                                            initialIndex:
+                                                _currentPageNotifier.value,
+                                            urls: ideas[index].content['imgs'],
+                                            pageController: _pc,
+                                            pageNotifier: _currentPageNotifier,
+                                            titleString:
+                                                ideas[index].content['title'],
+                                            descTag: "desc$index",
+                                            descString:
+                                                ideas[index].content['desc'],
+                                            ideaID: ideaModels[index].id,
+                                            comments:
+                                                ideaModels[index].comments,
+                                          ))),
                               child: Card(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20)),
-                                elevation: 16,
-                                margin: const EdgeInsets.all(15),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: child,)
-                              ));
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20)),
+                                  elevation: 16,
+                                  margin: const EdgeInsets.all(15),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: child,
+                                  )));
                         },
                       );
                     },
