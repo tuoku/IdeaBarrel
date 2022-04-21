@@ -8,6 +8,7 @@ import 'package:page_view_indicators/circle_page_indicator.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 
 import '../../models/idea.dart';
+import '../../models/user.dart';
 
 class SwipeScreen extends StatefulWidget {
   const SwipeScreen({Key? key}) : super(key: key);
@@ -22,12 +23,14 @@ class _SwipeScreenState extends State<SwipeScreen> {
   MatchEngine? engine;
   List<SwipeItem> ideas = [];
   List<Idea> ideaModels = [];
+  List<User> allUsers = [];
 
   double cardWidth = 0;
 
   @override
   void initState() {
     CosmosRepo().getAllIdeas().then((value)  {
+      CosmosRepo().getAllUsers().then((users) {
       DatabaseRepo().getSwiped().then((swiped) {
 
       if (kDebugMode) print("Ideas fetched: ${value.length}");
@@ -55,9 +58,11 @@ class _SwipeScreenState extends State<SwipeScreen> {
           setState(() {
             if (ideas.isEmpty) stackFinished = true;
             engine = MatchEngine(swipeItems: ideas);
+            allUsers = users;
           });
         },
       );
+    });
     });
 });
     super.initState();
@@ -287,6 +292,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                                             ideaID: ideaModels[index].id,
                                             comments:
                                                 ideaModels[index].comments,
+                                                allUsers: allUsers,
                                           ))),
                               child: Card(
                                   shape: RoundedRectangleBorder(
