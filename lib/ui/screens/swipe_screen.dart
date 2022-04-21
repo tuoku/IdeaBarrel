@@ -27,37 +27,39 @@ class _SwipeScreenState extends State<SwipeScreen> {
 
   @override
   void initState() {
-    CosmosRepo().getAllIdeas().then((value) async {
-      final swiped = await DatabaseRepo().getSwiped();
+    CosmosRepo().getAllIdeas().then((value)  {
+      DatabaseRepo().getSwiped().then((swiped) {
+
+      if (kDebugMode) print("Ideas fetched: ${value.length}");
+      value.removeWhere((element) => swiped.keys.contains(element.id));
+      ideaModels = value;
+      ideas = List.generate(value.length, (i) {
+        return SwipeItem(
+          content: {
+            "title": value[i].title,
+            "desc": value[i].description,
+            "imgs": value[i].imgs
+          },
+          likeAction: () {
+            FunctionsRepo().voteIdea(true, value[i].id);
+            DatabaseRepo().insertSwipe(value[i].id, true);
+          },
+          nopeAction: () {
+            FunctionsRepo().voteIdea(false, value[i].id);
+            DatabaseRepo().insertSwipe(value[i].id, false);
+          },
+        );
+      });
       WidgetsBinding.instance.addPostFrameCallback(
         (timeStamp) {
-          if (kDebugMode) print("Ideas fetched: ${value.length}");
-          value.removeWhere((element) => swiped.keys.contains(element.id));
-          ideaModels = value;
           setState(() {
-            ideas = List.generate(value.length, (i) {
-              return SwipeItem(
-                content: {
-                  "title": value[i].title,
-                  "desc": value[i].description,
-                  "imgs": value[i].imgs
-                },
-                likeAction: () {
-                  FunctionsRepo().voteIdea(true, value[i].id);
-                  DatabaseRepo().insertSwipe(value[i].id, true);
-                },
-                nopeAction: () {
-                  FunctionsRepo().voteIdea(false, value[i].id);
-                  DatabaseRepo().insertSwipe(value[i].id, false);
-                },
-              );
-            });
+            if (ideas.isEmpty) stackFinished = true;
             engine = MatchEngine(swipeItems: ideas);
           });
         },
       );
     });
-
+});
     super.initState();
   }
 
@@ -69,7 +71,9 @@ class _SwipeScreenState extends State<SwipeScreen> {
             child: Stack(
           children: [
             engine != null
-                ? SwipeCards(
+                ? 
+                ideas.isNotEmpty ?
+                SwipeCards(
                     onStackFinished: () {
                       setState(() {
                         stackFinished = true;
@@ -298,6 +302,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                     },
                     matchEngine: engine!,
                   )
+                  : SizedBox()
                 : const Center(
                     child: CircularProgressIndicator(),
                   ),
