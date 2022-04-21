@@ -209,7 +209,11 @@ class _AllIdeasScreenState extends State<AllIdeasScreen> {
               ],
             ),
             Expanded(
-                child: ListView.builder(
+                child: 
+                activeIdeas.isEmpty ?
+                Center(child: CircularProgressIndicator(),)
+                :
+                ListView.builder(
                     itemCount: activeIdeas.length,
                     itemBuilder: ((context, index) {
                       Idea i = activeIdeas[index];

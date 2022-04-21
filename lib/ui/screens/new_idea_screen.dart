@@ -317,59 +317,65 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
             style: titleStyle,
           ),
           children: [
-            Stack(
-              children: [
-                Positioned(
-                  bottom: 20,
-                  left: 55,
-                  child: ConfettiWidget(
-                    displayTarget: false,
-                    blastDirectionality: BlastDirectionality.explosive,
-                    confettiController: cc,
-                  ),
-                ),
-                ElevatedButton(
-                  style: ButtonStyle(
-                      fixedSize: MaterialStateProperty.all(const Size(140, 50)),
-                      backgroundColor: MaterialStateProperty.all(Colors.white)),
-                  child: _btnChild,
-                  onPressed: () async {
-                    setState(() {
-                      _btnChild = const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    });
+            StatefulBuilder(
+              builder: (BuildContext context, setState) {
+                return Stack(
+                  children: [
+                    Positioned(
+                      bottom: 20,
+                      left: 55,
+                      child: ConfettiWidget(
+                        displayTarget: false,
+                        blastDirectionality: BlastDirectionality.explosive,
+                        confettiController: cc,
+                      ),
+                    ),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                          fixedSize:
+                              MaterialStateProperty.all(const Size(140, 50)),
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.white)),
+                      child: _btnChild,
+                      onPressed: () async {
+                        setState(() {
+                          _btnChild = const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        });
 
-                    await CosmosRepo()
-                        .postIdea(Idea(
-                            id: "", // will be replaced by CosmosRepo
-                            comments: [],
-                            description: descController.text,
-                            imgs: imgs.keys.toList(),
-                            score: 0,
-                            totalDislikes: 0,
-                            totalLikes: 0,
-                            submittedAt: DateTime.now(),
-                            submitterUID: await AuthRepo().getUUID() ?? "",
-                            department: checkboxValues.entries
-                                .where((element) => element.value == true)
-                                .first
-                                .key,
-                            title: titleController.text,
-                            approved: false,
-                            trending: false))
-                        .then((_) {
-                      setState(() {
-                        _btnChild = const Text("Submitted!",
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 20));
-                      });
-                      cc.play();
-                    });
-                  },
-                ),
-              ],
-            )
+                        await CosmosRepo()
+                            .postIdea(Idea(
+                                id: "", // will be replaced by CosmosRepo
+                                comments: [],
+                                description: descController.text,
+                                imgs: imgs.keys.toList(),
+                                score: 0,
+                                totalDislikes: 0,
+                                totalLikes: 0,
+                                submittedAt: DateTime.now(),
+                                submitterUID: await AuthRepo().getUUID() ?? "",
+                                department: checkboxValues.entries
+                                    .where((element) => element.value == true)
+                                    .first
+                                    .key,
+                                title: titleController.text,
+                                approved: false,
+                                trending: false))
+                            .then((_) {
+                          setState(() {
+                            _btnChild = const Text("Submitted!",
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 20));
+                          });
+                          cc.play();
+                        });
+                      },
+                    ),
+                  ],
+                );
+              },
+            ),
           ]);
 
       PageModel deptPage = PageModel(
