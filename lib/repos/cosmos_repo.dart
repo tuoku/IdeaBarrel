@@ -51,7 +51,9 @@ class CosmosRepo {
           }),
           department: Department.values
               .firstWhere((e) => e.toString() == maps[i]['department']),
-          submitterUID: maps[i]['submitterUID']);
+          submitterUID: maps[i]['submitterUID'],
+          approved: maps[i]['approved'],
+          trending: maps[i]['trending']);
     });
   }
 
@@ -78,8 +80,12 @@ class CosmosRepo {
       "imgs": idea.imgs,
       "submitterUID": idea.submitterUID,
       "score": 0,
+      "totalLikes": 0,
+      "totalDislikes": 0,
       "department": idea.department.toString(),
       "comments": [],
+      "trending": false,
+      "approved": false,
     };
 
     if (kDebugMode) print(jsonEncode(body));
