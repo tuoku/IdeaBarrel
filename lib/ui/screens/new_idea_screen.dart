@@ -355,7 +355,9 @@ class NewIdeaScreenState extends State<NewIdeaScreen> {
                                 .where((element) => element.value == true)
                                 .first
                                 .key,
-                            title: titleController.text))
+                            title: titleController.text,
+                            approved: false,
+                            trending: false))
                         .then((_) {
                       setState(() {
                         _btnChild = const Text("Submitted!",
