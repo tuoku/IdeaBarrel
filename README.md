@@ -1,8 +1,8 @@
 # IdeaBarrel
-## Gamified idea management solution developed for internal use at Nokia
+### Gamified idea management solution developed for internal use at Nokia
 ![render](https://user-images.githubusercontent.com/70937274/163125729-4a5348f1-5c22-4820-ad58-dc321e487cbc.jpg)
 
-### Features
+## Features
   - #### Suggest improvements
     Have an idea to make your workplace better? IdeaBarrel is the most effortless way to make your voice heard!
     
@@ -24,7 +24,7 @@
   - #### Simple authentication
      This version of the app uses a simple per-installation authentication meaning you "log-out" by uninstalling the app and once logged out you cannot        log in with the same user again.
 
-### Notes for contributors
+## Notes for contributors
 Most CI issues can be avoided by running `dart fix --apply` and `flutter format .` before pushing your commits to GitHub.
 If you want to make sure it will pass, run:
 
