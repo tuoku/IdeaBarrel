@@ -142,6 +142,8 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                   child: Hero(
                       tag: widget.descTag,
                       child: Material(
+
+                        type: MaterialType.transparency,
                           child: Text(
                         widget.descString,
                         style: TextStyle(fontSize: 18),

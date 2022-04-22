@@ -65,7 +65,7 @@ class CosmosRepo {
         method: 'GET');
         List<dynamic> maps = res["Documents"];
         return List.generate(maps.length, (i) {
-          return User(name: maps[i]['name'], uuid: maps[i]['id']);
+          return User(name: maps[i]['name'], uuid: maps[i]['id'], totalSwiped: maps[i]['totalSwiped']);
         });
   }
 
@@ -108,6 +108,7 @@ class CosmosRepo {
     final Map<String, dynamic> body = {
       "id": uuid,
       "name": name,
+      'totalSwiped': 0,
       "createdAt": DateTime.now().millisecondsSinceEpoch
     };
 

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:ideabarrel/repos/auth_repo.dart';
 import 'package:ideabarrel/repos/cosmos_repo.dart';
+import 'package:ideabarrel/repos/database_repo.dart';
 import 'package:ideabarrel/ui/screens/all_ideas_screen.dart';
 import 'package:ideabarrel/ui/screens/shop_screen.dart';
 import 'package:shimmer/shimmer.dart';
@@ -29,22 +30,24 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
     CosmosRepo().getAllIdeas().then((mIdeas) async {
       final uid = await AuthRepo().getUUID() ?? "";
       final users = await CosmosRepo().getAllUsers();
+      
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         Map<String, int> tempMap = {};
         for (var e in users) {
-          tempMap[e.uuid] = 0;
+          tempMap[e.uuid] = e.totalSwiped;
         }
+
         for (var idea in mIdeas) {
           tempMap.update(
             idea.submitterUID,
-            (points) => (points + idea.totalLikes).toInt(),
+            (points) => (points + (idea.totalLikes * 10)).toInt(),
             ifAbsent: () => idea.totalLikes,
           );
         }
 
 
-        final score = tempMap[uid];
+        final score = tempMap[uid]!;
 
         final ls = tempMap.values.toList();
         ls.sort(((a, b) => b.compareTo(a)));
