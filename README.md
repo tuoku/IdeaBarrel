@@ -2,6 +2,19 @@
 ## Gamified idea management solution developed for internal use at Nokia
 ![render](https://user-images.githubusercontent.com/70937274/163125729-4a5348f1-5c22-4820-ad58-dc321e487cbc.jpg)
 
+### Features
+  - #### Suggest improvements
+    Have an idea to make your workplace better? IdeaBarrel is the most effortless way to make your voice heard!
+    
+  - #### Vote your coworkers ideas into reality
+    Featuring a familiar and intuitive voting system, simply swipe right on any ideas you'd like to see come true!
+    
+  - #### Earn rewards
+    You earn 1 point every time you vote on an idea (like or dislike) and 10 points every time an idea you submitted gets liked! These points can be used       to redeem various rewards.
+    
+  - #### Streamlined process for busy departments
+    Ideas are categorized by departments responsible for their implementation, and every week the heads of departments (or any designated persons) get a       summary email of past weeks top ideas with a simple interface for approving them.
+
 ### Notes for contributors
 Most CI issues can be avoided by running `dart fix --apply` and `flutter format .` before pushing your commits to GitHub.
 If you want to make sure it will pass, run:
