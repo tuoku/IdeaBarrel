@@ -12,8 +12,8 @@ class FunctionsRepo {
 
 static const _baseUrl = "https://ideabarrel.azurewebsites.net/api";
 
-  Future<bool> voteIdea(bool like, String id) async {
-    final url = "$_baseUrl/voteIdea?id=$id&like=$like";
+  Future<bool> voteIdea(bool like, String id, String voterid) async {
+    final url = "$_baseUrl/voteIdea?id=$id&like=$like&voterid=$voterid";
     http.Response res = await http.post(Uri.parse(url));
      if (res.statusCode == 200) return true;
      return false;

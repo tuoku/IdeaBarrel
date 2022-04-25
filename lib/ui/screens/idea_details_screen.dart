@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:ideabarrel/repos/auth_repo.dart';
+import 'package:ideabarrel/repos/cosmos_repo.dart';
 import 'package:ideabarrel/repos/functions_repo.dart';
 import 'package:overlay_support/overlay_support.dart';
 
 import '../../models/comment.dart';
+import '../../models/user.dart';
 
 class IdeaDetailsScreen extends StatefulWidget {
   const IdeaDetailsScreen(
@@ -21,7 +23,8 @@ class IdeaDetailsScreen extends StatefulWidget {
       required this.descTag,
       required this.descString,
       required this.ideaID,
-      required this.comments})
+      required this.comments,
+      required this.allUsers})
       : super(key: key);
 
   final String pageViewTag;
@@ -41,6 +44,9 @@ class IdeaDetailsScreen extends StatefulWidget {
   final String ideaID;
   final List<Comment> comments;
 
+  final List<User> allUsers;
+
+
   @override
   State<IdeaDetailsScreen> createState() => _IdeaDetailsScreenState();
 }
@@ -50,9 +56,11 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
   bool isSending = false;
   List<Comment> comments = [];
 
+
   @override
   void initState() {
     comments = widget.comments;
+    
     super.initState();
   }
 
@@ -91,12 +99,7 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                           child: Material(
                               type: MaterialType.transparency,
                               child: PageView(
-                                onPageChanged: (int index) {
-                                  setState(() {
-                                    widget.pageNotifier.value = index;
-                                    widget.pageController.jumpToPage(index);
-                                  });
-                                },
+                                onPageChanged: (int index) {},
                                 physics: const BouncingScrollPhysics(
                                     parent: AlwaysScrollableScrollPhysics()),
                                 controller: PageController(
@@ -106,7 +109,7 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                                   return ShaderMask(
                                       shaderCallback: (rect) {
                                         return LinearGradient(
-                                          begin: Alignment.center,    
+                                          begin: Alignment.center,
                                           end: Alignment.bottomCenter,
                                           colors: [
                                             Colors.black,
@@ -124,7 +127,7 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                           tag: widget.pageViewTag)))),
           SliverList(
             delegate: SliverChildListDelegate([
-               Padding(
+              Padding(
                 padding: EdgeInsets.only(left: 15, top: 10),
                 child: Align(
                   alignment: Alignment.centerLeft,
@@ -139,6 +142,8 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                   child: Hero(
                       tag: widget.descTag,
                       child: Material(
+
+                        type: MaterialType.transparency,
                           child: Text(
                         widget.descString,
                         style: TextStyle(fontSize: 18),
@@ -153,9 +158,11 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                   ),
                 ),
               ),
-              comments.isEmpty ?
-                Center(child: Text("No comments yet"),)
-                : SizedBox(),
+              comments.isEmpty
+                  ? Center(
+                      child: Text("No comments yet"),
+                    )
+                  : SizedBox(),
               ...List.generate(comments.length, ((index) {
                 return Padding(
                     padding: EdgeInsets.all(5),
@@ -165,13 +172,24 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                           width: 10,
                         ),
                         CircleAvatar(
-                          backgroundImage:
-                              NetworkImage("https://innobarrel.blob.core.windows.net/img/${comments[index].commenterUID}"),
+                          backgroundImage: NetworkImage(
+                              "https://innobarrel.blob.core.windows.net/img/${comments[index].commenterUID}"),
                         ),
                         SizedBox(
                           width: 10,
                         ),
-                        Text(comments[index].text)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(widget.allUsers
+                                    .where((e) =>
+                                        e.uuid == comments[index].commenterUID)
+                                    .first
+                                    .name,
+                                    style: TextStyle(fontWeight: FontWeight.bold),),
+                            Text(comments[index].text)
+                          ],
+                        )
                       ],
                     ));
               })),
@@ -189,43 +207,47 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                             ),
                             controller: _commentController,
                             onSubmitted: (value) async {
-                              if (_commentController.text.isNotEmpty && !isSending) {
-                          setState(() {
-                            isSending = true;
-                          });
-                          FunctionsRepo()
-                              .addComment(
-                                  _commentController.text, widget.ideaID, await AuthRepo().getUUID() ?? "")
-                              .then((value) {
-                            if (value) {
-                              showSimpleNotification(Text("Comment added!"),
-                                  background: Colors.green,
-                                  slideDismissDirection:
-                                      DismissDirection.horizontal);
-                              setState(() async {
-                                isSending = false;
+                              final uid = await AuthRepo().getUUID() ?? "";
+                              if (_commentController.text.isNotEmpty &&
+                                  !isSending) {
+                                setState(() {
+                                  isSending = true;
+                                });
+                                FunctionsRepo()
+                                    .addComment(_commentController.text,
+                                        widget.ideaID, uid)
+                                    .then((value) {
+                                  if (value) {
+                                    showSimpleNotification(
+                                        Text("Comment added!"),
+                                        background: Colors.green,
+                                        slideDismissDirection:
+                                            DismissDirection.horizontal);
+                                    setState(() async {
+                                      isSending = false;
 
-                                comments.add(Comment(
-                                    commenterUID: await AuthRepo().getUUID() ?? "",
-                                    id: "",
-                                    likes: 0,
-                                    submittedAt: DateTime.now(),
-                                    text: _commentController.text));
-                                _commentController.clear();
-                              });
-                            } else {
-                              showSimpleNotification(
-                                  Text("Something went wrong"),
-                                  subtitle: Text("Comment couldn't be posted"),
-                                  background: Colors.red,
-                                  slideDismissDirection:
-                                      DismissDirection.horizontal);
-                              setState(() {
-                                isSending = false;
-                              });
-                            }
-                          });
-                        }
+                                      comments.add(Comment(
+                                          commenterUID: uid,
+                                          id: "",
+                                          likes: 0,
+                                          submittedAt: DateTime.now(),
+                                          text: _commentController.text));
+                                      _commentController.clear();
+                                    });
+                                  } else {
+                                    showSimpleNotification(
+                                        Text("Something went wrong"),
+                                        subtitle:
+                                            Text("Comment couldn't be posted"),
+                                        background: Colors.red,
+                                        slideDismissDirection:
+                                            DismissDirection.horizontal);
+                                    setState(() {
+                                      isSending = false;
+                                    });
+                                  }
+                                });
+                              }
                             },
                           ))),
                   ElevatedButton(
@@ -236,24 +258,26 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                               ? Colors.grey
                               : Colors.blue),
                       onPressed: (() async {
+                        final uid = await AuthRepo().getUUID() ?? "";
                         if (_commentController.text.isNotEmpty && !isSending) {
                           setState(() {
                             isSending = true;
                           });
                           FunctionsRepo()
                               .addComment(
-                                  _commentController.text, widget.ideaID, await AuthRepo().getUUID() ?? "")
+                                  _commentController.text, widget.ideaID, uid)
                               .then((value) {
                             if (value) {
                               showSimpleNotification(Text("Comment added!"),
                                   background: Colors.green,
                                   slideDismissDirection:
                                       DismissDirection.horizontal);
-                              setState(() async {
+
+                              setState(() {
                                 isSending = false;
 
                                 comments.add(Comment(
-                                    commenterUID: await AuthRepo().getUUID() ?? "",
+                                    commenterUID: uid,
                                     id: "",
                                     likes: 0,
                                     submittedAt: DateTime.now(),
@@ -282,9 +306,7 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                           : Icon(Icons.send))
                 ],
               ),
-              SizedBox(
-                height: 500,
-              ),
+              
             ]),
           )
         ]));

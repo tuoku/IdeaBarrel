@@ -7,6 +7,7 @@ import 'package:ideabarrel/models/comment.dart';
 
 import '../models/cosmos.dart';
 import '../models/idea.dart';
+import '../models/user.dart';
 
 class CosmosRepo {
   // --- singleton boilerplate
@@ -34,6 +35,8 @@ class CosmosRepo {
           submittedAt:
               DateTime.fromMillisecondsSinceEpoch(maps[i]['submittedAt'] ?? 0),
           score: maps[i]['score'],
+          totalDislikes: maps[i]['totalDislikes'],
+          totalLikes: maps[i]['totalLikes'],
           comments: List.generate(maps[i]['comments'].length, (ii) {
             return Comment(
               id: maps[i]['comments'][ii]['id'],
@@ -48,8 +51,22 @@ class CosmosRepo {
           }),
           department: Department.values
               .firstWhere((e) => e.toString() == maps[i]['department']),
-          submitterUID: maps[i]['submitterUID']);
+          submitterUID: maps[i]['submitterUID'],
+          approved: maps[i]['approved'],
+          trending: maps[i]['trending']);
     });
+  }
+
+  Future<List<User>> getAllUsers() async {
+      Map<String, dynamic> res = await cosmos.queryCosmos(
+        isQuery: true,
+        url:
+            'https://ideabarrel.documents.azure.com:443/dbs/Ideas/colls/Users/docs',
+        method: 'GET');
+        List<dynamic> maps = res["Documents"];
+        return List.generate(maps.length, (i) {
+          return User(name: maps[i]['name'], uuid: maps[i]['id'], totalSwiped: maps[i]['totalSwiped']);
+        });
   }
 
   // returns true if success, false if not
@@ -63,8 +80,12 @@ class CosmosRepo {
       "imgs": idea.imgs,
       "submitterUID": idea.submitterUID,
       "score": 0,
+      "totalLikes": 0,
+      "totalDislikes": 0,
       "department": idea.department.toString(),
       "comments": [],
+      "trending": false,
+      "approved": false,
     };
 
     if (kDebugMode) print(jsonEncode(body));
@@ -87,6 +108,7 @@ class CosmosRepo {
     final Map<String, dynamic> body = {
       "id": uuid,
       "name": name,
+      'totalSwiped': 0,
       "createdAt": DateTime.now().millisecondsSinceEpoch
     };
 
