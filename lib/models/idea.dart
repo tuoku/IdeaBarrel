@@ -17,8 +17,7 @@ class Idea {
   bool trending;
 
   Idea(
-      {
-      required this.id,
+      {required this.id,
       required this.comments,
       required this.description,
       required this.imgs,

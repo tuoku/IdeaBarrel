@@ -1,4 +1,3 @@
-
 import 'package:flutter/widgets.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -42,10 +41,7 @@ class DatabaseRepo {
 
     await db?.insert(
       'swiped',
-      {
-        'id': id,
-        'vote': vote ? 1 : 0
-      },
+      {'id': id, 'vote': vote ? 1 : 0},
     );
   }
 
@@ -57,8 +53,7 @@ class DatabaseRepo {
     for (var m in maps) {
       map[m['id']] = (m['vote'] == 1 ? true : false);
     }
-   
+
     return map;
   }
-
 }

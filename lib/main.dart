@@ -36,7 +36,6 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue, unselectedWidgetColor: Colors.white),
       navigatorObservers: [routeObserver],
       home: StatefulBuilder(builder: (context, setState) {
-        
         AuthRepo().loggedInStream.stream.asBroadcastStream().listen((event) {
           setState(
             () {

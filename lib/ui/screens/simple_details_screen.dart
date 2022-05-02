@@ -2,60 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:ideabarrel/repos/auth_repo.dart';
 import 'package:ideabarrel/repos/functions_repo.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../models/comment.dart';
+import '../../models/idea.dart';
 import '../../models/user.dart';
 
-class IdeaDetailsScreen extends StatefulWidget {
-  const IdeaDetailsScreen(
-      {Key? key,
-      required this.pageView,
-      required this.pageViewTag,
-      required this.title,
-      required this.titleTag,
-      required this.pageController,
-      required this.pageNotifier,
-      required this.initialIndex,
-      required this.urls,
-      required this.titleString,
-      required this.descTag,
-      required this.descString,
-      required this.ideaID,
-      required this.comments,
-      required this.allUsers})
+class SimpleDetailsScreen extends StatefulWidget {
+  const SimpleDetailsScreen(
+      {Key? key, required this.idea, required this.allUsers})
       : super(key: key);
 
-  final String pageViewTag;
-  final Widget pageView;
-  final ValueNotifier<int> pageNotifier;
-  final PageController pageController;
-  final int initialIndex;
-  final List<String> urls;
-
-  final String titleTag;
-  final Widget title;
-  final String titleString;
-
-  final String descTag;
-  final String descString;
-
-  final String ideaID;
-  final List<Comment> comments;
-
+  final Idea idea;
   final List<User> allUsers;
 
   @override
-  State<IdeaDetailsScreen> createState() => _IdeaDetailsScreenState();
+  State<SimpleDetailsScreen> createState() => _SimpleDetailsScreenState();
 }
 
-class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
+class _SimpleDetailsScreenState extends State<SimpleDetailsScreen> {
   final TextEditingController _commentController = TextEditingController();
   bool isSending = false;
   List<Comment> comments = [];
 
   @override
   void initState() {
-    comments = widget.comments;
+    comments = widget.idea.comments;
 
     super.initState();
   }
@@ -80,12 +52,12 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                   title: Hero(
                       child: Material(
                           type: MaterialType.transparency,
-                          child: Text(widget.titleString,
+                          child: Text(widget.idea.title,
                               style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white))),
-                      tag: widget.titleTag),
+                      tag: widget.idea.title),
                   background: Container(
                       decoration: const BoxDecoration(
                         color: Colors.black,
@@ -98,10 +70,9 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                                 onPageChanged: (int index) {},
                                 physics: const BouncingScrollPhysics(
                                     parent: AlwaysScrollableScrollPhysics()),
-                                controller: PageController(
-                                    initialPage: widget.initialIndex),
+                                controller: PageController(initialPage: 0),
                                 children:
-                                    List.generate(widget.urls.length, (i) {
+                                    List.generate(widget.idea.imgs.length, (i) {
                                   return ShaderMask(
                                       shaderCallback: (rect) {
                                         return const LinearGradient(
@@ -117,10 +88,11 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                                       blendMode: BlendMode.dstIn,
                                       child: Image(
                                           fit: BoxFit.cover,
-                                          image: NetworkImage(widget.urls[i])));
+                                          image: NetworkImage(
+                                              widget.idea.imgs[i])));
                                 }),
                               )),
-                          tag: widget.pageViewTag)))),
+                          tag: const Uuid().v4())))),
           SliverList(
             delegate: SliverChildListDelegate([
               const Padding(
@@ -136,11 +108,11 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
               Padding(
                   padding: const EdgeInsets.all(15),
                   child: Hero(
-                      tag: widget.descTag,
+                      tag: widget.idea.description,
                       child: Material(
                           type: MaterialType.transparency,
                           child: Text(
-                            widget.descString,
+                            widget.idea.description,
                             style: const TextStyle(fontSize: 18),
                           )))),
               const Padding(
@@ -213,7 +185,7 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                                 });
                                 FunctionsRepo()
                                     .addComment(_commentController.text,
-                                        widget.ideaID, uid)
+                                        widget.idea.id, uid)
                                     .then((value) {
                                   if (value) {
                                     showSimpleNotification(
@@ -263,7 +235,7 @@ class _IdeaDetailsScreenState extends State<IdeaDetailsScreen> {
                           });
                           FunctionsRepo()
                               .addComment(
-                                  _commentController.text, widget.ideaID, uid)
+                                  _commentController.text, widget.idea.id, uid)
                               .then((value) {
                             if (value) {
                               showSimpleNotification(
