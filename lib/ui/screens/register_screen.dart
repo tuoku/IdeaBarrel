@@ -11,7 +11,7 @@ import '../../repos/storage_repo.dart';
 class RegisterScreen extends StatefulWidget {
   RegisterScreen({Key? key}) : super(key: key);
 
-  final userId = Uuid().v4();
+  final userId = const Uuid().v4();
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -40,14 +40,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   "Register",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 28,
                       color: Colors.white),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
                 TextField(
@@ -61,17 +61,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 40,
                 ),
-                Text(
+                const Text(
                   "Add a photo",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 22,
                       color: Colors.white),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 40,
                 ),
                 Align(
@@ -169,7 +169,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     size: 40,
                                   )),
                             ))),
-                SizedBox(
+                const SizedBox(
                   height: 40,
                 ),
                 Align(
@@ -185,9 +185,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 .registerUser(
                                     widget.userId, _nameController.text)
                                 .then((value) {
-                                  setState(() {
-                                    isLoading = false;
-                                  });
+                              setState(() {
+                                isLoading = false;
+                              });
                               if (value) {
                                 AuthRepo().logIn(widget.userId);
                               }
@@ -195,10 +195,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           }
                         },
                         child: isLoading
-                            ? Center(
+                            ? const Center(
                                 child: CircularProgressIndicator(),
                               )
-                            : Text(
+                            : const Text(
                                 "Register!",
                                 style: TextStyle(color: Colors.black),
                               )))

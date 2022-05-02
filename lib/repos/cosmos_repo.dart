@@ -39,7 +39,7 @@ class CosmosRepo {
           totalLikes: maps[i]['totalLikes'],
           comments: List.generate(maps[i]['comments'].length, (ii) {
             return Comment(
-              id: maps[i]['comments'][ii]['id'],
+                id: maps[i]['comments'][ii]['id'],
                 commenterUID: maps[i]['comments'][ii]['commenterUID'],
                 likes: maps[i]['comments'][ii]['likes'],
                 submittedAt: DateTime.fromMillisecondsSinceEpoch(
@@ -58,15 +58,18 @@ class CosmosRepo {
   }
 
   Future<List<User>> getAllUsers() async {
-      Map<String, dynamic> res = await cosmos.queryCosmos(
+    Map<String, dynamic> res = await cosmos.queryCosmos(
         isQuery: true,
         url:
             'https://ideabarrel.documents.azure.com:443/dbs/Ideas/colls/Users/docs',
         method: 'GET');
-        List<dynamic> maps = res["Documents"];
-        return List.generate(maps.length, (i) {
-          return User(name: maps[i]['name'], uuid: maps[i]['id'], totalSwiped: maps[i]['totalSwiped']);
-        });
+    List<dynamic> maps = res["Documents"];
+    return List.generate(maps.length, (i) {
+      return User(
+          name: maps[i]['name'],
+          uuid: maps[i]['id'],
+          totalSwiped: maps[i]['totalSwiped']);
+    });
   }
 
   // returns true if success, false if not
@@ -104,7 +107,6 @@ class CosmosRepo {
 
   // returns true if success, false if not
   Future<bool> registerUser(String uuid, String name) async {
-    
     final Map<String, dynamic> body = {
       "id": uuid,
       "name": name,

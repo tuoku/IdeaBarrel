@@ -12,7 +12,7 @@ class AuthRepo {
   // ---
 
   StreamController<bool> loggedInStream = StreamController<bool>.broadcast();
-  
+
   Future<String?> getUUID() =>
       SharedPreferences.getInstance().then((value) => value.getString('uuid'));
 

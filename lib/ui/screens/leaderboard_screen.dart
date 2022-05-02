@@ -3,9 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:ideabarrel/repos/auth_repo.dart';
 import 'package:ideabarrel/repos/cosmos_repo.dart';
-import 'package:ideabarrel/repos/database_repo.dart';
 import 'package:ideabarrel/ui/screens/all_ideas_screen.dart';
 import 'package:ideabarrel/ui/screens/shop_screen.dart';
+import 'package:ideabarrel/ui/screens/simple_details_screen.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../models/idea.dart';
@@ -30,7 +30,6 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
     CosmosRepo().getAllIdeas().then((mIdeas) async {
       final uid = await AuthRepo().getUUID() ?? "";
       final users = await CosmosRepo().getAllUsers();
-      
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         Map<String, int> tempMap = {};
@@ -46,13 +45,11 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
           );
         }
 
-
         final score = tempMap[uid]!;
 
         final ls = tempMap.values.toList();
         ls.sort(((a, b) => b.compareTo(a)));
         final ts = ls.first;
-
 
         mIdeas.sort(
           (a, b) => b.score.compareTo(a.score),
@@ -95,31 +92,31 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               "My points:",
                               style:
                                   TextStyle(color: Colors.white, fontSize: 22),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             myScore != null
                                 ? Text(
                                     myScore.toString(),
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 32,
                                         fontWeight: FontWeight.bold),
                                   )
                                 : Shimmer.fromColors(
-                                    baseColor:
-                                        Color.fromARGB(255, 202, 201, 201),
+                                    baseColor: const Color.fromARGB(
+                                        255, 202, 201, 201),
                                     highlightColor: Colors.white,
                                     child: Container(
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(16),
-                                          color: Color.fromARGB(
+                                          color: const Color.fromARGB(
                                               255, 228, 228, 228)),
                                       height: 40,
                                       width: 100,
@@ -147,58 +144,58 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
         const SizedBox(
           height: 10,
         ),
-
         ...List.generate(min(3, userScores.length), ((i) {
-          final percentageOfMax = ( userScores.values.toList()[i] / topScore) * 100;
+          final percentageOfMax =
+              (userScores.values.toList()[i] / topScore) * 100;
           return Padding(
-            padding: EdgeInsets.only(top: 7, bottom: 7),
-            child: Row(
-          children: [
-             CircleAvatar(
-               backgroundColor: Colors.grey[300],
-              radius: 25,
-              backgroundImage: NetworkImage("https://innobarrel.blob.core.windows.net/img/${userScores.keys.toList()[i]}"),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                 Text(
-                  allUsers.firstWhere((e) => e.uuid == userScores.keys.toList()[i]).name,
-                  style: TextStyle(fontSize: 18),
-                ),
-                
-                 Row(
-                  children: [
-                    Container(
-                      height: 20,
-                      width: max(10, 250 * percentageOfMax / 100),
-                      decoration: BoxDecoration(
-                          gradient: const LinearGradient(colors: [
-                            Color.fromARGB(255, 44, 143, 224),
-                            Color.fromARGB(255, 18, 195, 226)
-                          ]),
-                          borderRadius: BorderRadius.circular(16)),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      userScores.values.toList()[i].toString(),
-                      style: TextStyle(fontSize: 16),
-                    )
-                  ],
-                ),
-                
-                
-              ],
-            ),
-          ],
-        ));
+              padding: const EdgeInsets.only(top: 7, bottom: 7),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    backgroundColor: Colors.grey[300],
+                    radius: 25,
+                    backgroundImage: NetworkImage(
+                        "https://innobarrel.blob.core.windows.net/img/${userScores.keys.toList()[i]}"),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        allUsers
+                            .firstWhere(
+                                (e) => e.uuid == userScores.keys.toList()[i])
+                            .name,
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                            height: 20,
+                            width: max(10, 250 * percentageOfMax / 100),
+                            decoration: BoxDecoration(
+                                gradient: const LinearGradient(colors: [
+                                  Color.fromARGB(255, 44, 143, 224),
+                                  Color.fromARGB(255, 18, 195, 226)
+                                ]),
+                                borderRadius: BorderRadius.circular(16)),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            userScores.values.toList()[i].toString(),
+                            style: const TextStyle(fontSize: 16),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ));
         })),
-        
         const SizedBox(
           height: 25,
         ),
@@ -224,6 +221,11 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
           // ideas are sorted by score asc
           return Card(
               child: ListTile(
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: ((context) => SimpleDetailsScreen(
+                      idea: ideas[index], allUsers: allUsers))));
+            },
             title: Text(ideas[index].title),
             subtitle: Text("${ideas[index].totalLikes} likes"),
           ));

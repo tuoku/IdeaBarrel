@@ -6,8 +6,7 @@ class Comment {
   int likes;
 
   Comment(
-      {
-      required this.id,
+      {required this.id,
       required this.commenterUID,
       required this.likes,
       required this.submittedAt,

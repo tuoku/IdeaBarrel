@@ -1,5 +1,4 @@
 class User {
-
   String uuid;
   String name;
   int totalSwiped;

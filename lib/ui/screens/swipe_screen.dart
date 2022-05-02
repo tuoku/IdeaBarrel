@@ -324,7 +324,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
                         },
                         matchEngine: engine!,
                       )
-                    : SizedBox()
+                    : const SizedBox()
                 : const Center(
                     child: CircularProgressIndicator(),
                   ),

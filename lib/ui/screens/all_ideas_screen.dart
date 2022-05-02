@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:ideabarrel/misc/enums.dart';
 import 'package:ideabarrel/repos/cosmos_repo.dart';
+import 'package:ideabarrel/ui/screens/simple_details_screen.dart';
 
 import '../../models/idea.dart';
+import '../../models/user.dart';
 
 class AllIdeasScreen extends StatefulWidget {
   const AllIdeasScreen({Key? key}) : super(key: key);
@@ -31,6 +33,7 @@ class _AllIdeasScreenState extends State<AllIdeasScreen> {
   List<Idea> allIdeas = [];
   List<Idea> activeIdeas = [];
   List<String> activeFilters = [];
+  List<User> allUsers = [];
   Query activeQuery = Query();
 
   void filter(Query query) {
@@ -75,13 +78,16 @@ class _AllIdeasScreenState extends State<AllIdeasScreen> {
   @override
   void initState() {
     CosmosRepo().getAllIdeas().then((ideas) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        ideas.sort(
-          (a, b) => b.totalLikes.compareTo(a.totalLikes),
-        );
-        setState(() {
-          allIdeas = ideas;
-          activeIdeas = ideas;
+      CosmosRepo().getAllUsers().then((users) {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          ideas.sort(
+            (a, b) => b.totalLikes.compareTo(a.totalLikes),
+          );
+          setState(() {
+            allUsers = users;
+            allIdeas = ideas;
+            activeIdeas = ideas;
+          });
         });
       });
     });
@@ -183,7 +189,9 @@ class _AllIdeasScreenState extends State<AllIdeasScreen> {
             Row(
               children: [
                 const Text("Sort by:"),
-                SizedBox(width: 10,),
+                const SizedBox(
+                  width: 10,
+                ),
                 DropdownButton(
                     value: sort,
                     items: const [
@@ -209,40 +217,45 @@ class _AllIdeasScreenState extends State<AllIdeasScreen> {
               ],
             ),
             Expanded(
-                child: 
-                activeIdeas.isEmpty ?
-                Center(child: CircularProgressIndicator(),)
-                :
-                ListView.builder(
-                    itemCount: activeIdeas.length,
-                    itemBuilder: ((context, index) {
-                      Idea i = activeIdeas[index];
-                      return Card(
-                        child: ListTile(
-                          title: Text(i.title),
-                          subtitle: Text(
-                              "${i.totalLikes} likes, ${(i.score / i.totalLikes * 100).toStringAsFixed(0)}% liked, ${i.comments.length} comments"),
-                          trailing: SizedBox(
-                              width: 50,
-                              child: Row(children: [
-                                activeIdeas[index].trending
-                                    ? Icon(
-                                        Icons.local_fire_department,
-                                        color: Colors.red,
-                                        size: 25,
-                                      )
-                                    : SizedBox(),
-                                activeIdeas[index].approved
-                                    ? Icon(
-                                        Icons.done,
-                                        color: Colors.green,
-                                        size: 25,
-                                      )
-                                    : SizedBox()
-                              ])),
-                        ),
-                      );
-                    })))
+                child: activeIdeas.isEmpty
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : ListView.builder(
+                        itemCount: activeIdeas.length,
+                        itemBuilder: ((context, index) {
+                          Idea i = activeIdeas[index];
+                          return Card(
+                            child: ListTile(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => SimpleDetailsScreen(
+                                        idea: i, allUsers: allUsers)));
+                              },
+                              title: Text(i.title),
+                              subtitle: Text(
+                                  "${i.totalLikes} likes, ${(i.score / i.totalLikes * 100).toStringAsFixed(0)}% liked, ${i.comments.length} comments"),
+                              trailing: SizedBox(
+                                  width: 50,
+                                  child: Row(children: [
+                                    activeIdeas[index].trending
+                                        ? const Icon(
+                                            Icons.local_fire_department,
+                                            color: Colors.red,
+                                            size: 25,
+                                          )
+                                        : const SizedBox(),
+                                    activeIdeas[index].approved
+                                        ? const Icon(
+                                            Icons.done,
+                                            color: Colors.green,
+                                            size: 25,
+                                          )
+                                        : const SizedBox()
+                                  ])),
+                            ),
+                          );
+                        })))
           ],
         ),
       ),
